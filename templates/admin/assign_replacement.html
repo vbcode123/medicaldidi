@@ -1,0 +1,81 @@
+{% extends "admin/admin_dashboard.html" %}
+{% load static %}
+
+{% block title %}Assign Replacement Nurse - Medical Didi{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-user-shield fa-2x me-3" style="color: var(--primary-pink);"></i>
+        <div>
+            <h2>Assign Replacement Nurse</h2>
+            <p class="mb-0 text-muted">Select a nurse to cover for {{ leave.nurse.full_name }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="dashboard-card">
+            <!-- Leave Information -->
+            <div class="mb-4 p-4 bg-light rounded-3">
+                <h5 class="fw-semibold mb-3" style="color: var(--dark-pink);"><i class="fas fa-info-circle me-2"></i>Leave Details</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Nurse:</strong> {{ leave.nurse.full_name }}</p>
+                        <p class="mb-2"><strong>From:</strong> {{ leave.from_date|date:"d M Y" }}</p>
+                        {% if active_assignment %}
+                        <p class="mb-2"><strong>Patient:</strong> {{ active_assignment.patient.full_name }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>To:</strong> {{ leave.to_date|date:"d M Y" }}</p>
+                        <p class="mb-0"><strong>Reason:</strong> {{ leave.reason }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Replacement Form -->
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="form-label fw-semibold"><i class="fas fa-user-nurse me-2 text-pink"></i>Select Replacement Nurse</label>
+                    {% if available_nurses %}
+                        <select class="form-select form-select-lg" name="replacement_nurse" required>
+                            <option value="">Choose a nurse...</option>
+                            {% for nurse in available_nurses %}
+                                <option value="{{ nurse.id }}">
+                                    {{ nurse.full_name }} | 
+                                    {% if nurse.gender %}{{ nurse.gender }}{% endif %} | 
+                                    Exp: {{ nurse.experience }} | 
+                                    {{ nurse.phone }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>No other approved nurses available for replacement!
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold"><i class="fas fa-comment-alt me-2 text-pink"></i>Remark (Optional)</label>
+                    <textarea name="remark" class="form-control" rows="4" placeholder="Add any notes or remarks about this replacement..."></textarea>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    {% if available_nurses %}
+                        <button type="submit" class="btn btn-pink flex-grow-1">
+                            <i class="fas fa-check-circle me-2"></i>Confirm Assignment
+                        </button>
+                    {% endif %}
+                    <a href="{% url 'admin_leave_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Leave Requests
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

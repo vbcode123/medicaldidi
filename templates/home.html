@@ -1,0 +1,1669 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #0EA5E9;
+            --primary-dark: #0284C7;
+            --secondary: #14B8A6;
+            --accent: #E0F7FA;
+            --accent-light: #F0FDFA;
+            --text: #0F172A;
+            --text-light: #64748B;
+            --white: #FFFFFF;
+            --light-gray: #F8FAFC;
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, #FEE2E2, #FEF3C7);
+            --shadow: 0 10px 25px rgba(0,0,0,0.08);
+            --shadow-lg: 0 15px 35px rgba(14, 165, 233, 0.15);
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Top Login Bar */
+        .top-bar {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .top-bar-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid white;
+        }
+
+        .top-bar a:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .top-bar a.customer-login {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: transparent;
+        }
+
+        .top-bar a.nurse-login {
+            background: linear-gradient(135deg, #ec407a 0%, #c2185b 100%);
+            border-color: transparent;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--white);
+            padding: 1rem 5%;
+            box-shadow: var(--shadow);
+            position: sticky;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-text .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .logo-text .tagline {
+            font-size: 0.7rem;
+            color: var(--secondary);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--gradient-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 1.75rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+            animation: float 3s ease-in-out infinite;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section with Images */
+        .hero {
+            padding: 80px 5% 60px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(224, 247, 250, 0.9), rgba(255, 255, 255, 0.95));
+        }
+
+        .floating-image {
+            position: absolute;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: float 6s ease-in-out infinite;
+            z-index: 1;
+            transition: transform 0.5s ease;
+        }
+
+        .floating-image:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .floating-1 {
+            top: 15%;
+            right: 10%;
+            width: 200px;
+            height: 250px;
+            animation-delay: 0s;
+        }
+
+        .floating-2 {
+            top: 50%;
+            right: 5%;
+            width: 160px;
+            height: 200px;
+            animation-delay: 1s;
+        }
+
+        .floating-3 {
+            bottom: 10%;
+            right: 15%;
+            width: 140px;
+            height: 170px;
+            animation-delay: 2s;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+            color: var(--text);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-text h1 span {
+            color: var(--primary);
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 3s ease infinite;
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .stat {
+            text-align: center;
+            background: white;
+            padding: 1.25rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            animation: bounceIn 1s ease;
+            flex: 1;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        .stat:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 5%;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-primary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            animation: expandWidth 1s ease-out 0.5s both;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--white);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        .service-card:nth-child(5) { animation-delay: 0.5s; }
+        .service-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            background: var(--accent-light);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            transition: all 0.3s;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.1) rotate(360deg);
+            animation: none;
+        }
+
+        .service-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--text);
+            font-size: 1.25rem;
+        }
+
+        .service-card p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 5%;
+            background: var(--white);
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--light-gray);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 30%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            animation: zoomIn 0.6s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .feature:nth-child(1) { animation-delay: 0.1s; }
+        .feature:nth-child(2) { animation-delay: 0.2s; }
+        .feature:nth-child(3) { animation-delay: 0.3s; }
+        .feature:nth-child(4) { animation-delay: 0.4s; }
+        .feature:nth-child(5) { animation-delay: 0.5s; }
+        .feature:nth-child(6) { animation-delay: 0.6s; }
+
+        .feature:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            background: var(--gradient-primary);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* How it works */
+        .how-it-works {
+            padding: 80px 5%;
+            background: var(--gradient-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-it-works::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+            animation: rotate 40s linear infinite;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: all 0.3s;
+            animation: slideInLeft 0.8s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .step:nth-child(1) { animation-delay: 0.1s; }
+        .step:nth-child(2) { animation-delay: 0.3s; }
+        .step:nth-child(3) { animation-delay: 0.5s; }
+
+        .step:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .step-icon {
+            background: var(--accent);
+            color: var(--primary);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 1rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 5%;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .testimonial-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonial-slide {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            display: none;
+            transition: all 0.5s;
+        }
+
+        .testimonial-slide.active {
+            display: block;
+            animation: flipInX 1s ease;
+        }
+
+        @keyframes flipInX {
+            from { transform: perspective(400px) rotateX(90deg); opacity: 0; }
+            to { transform: perspective(400px) rotateX(0deg); opacity: 1; }
+        }
+
+        .testimonial-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 4px solid white;
+            animation: borderGlow 3s infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { border-color: white; }
+            50% { border-color: var(--primary); }
+        }
+
+        .stars {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text);
+            position: relative;
+            padding: 0 1.5rem;
+        }
+
+        .testimonial-text::before,
+        .testimonial-text::after {
+            color: var(--primary);
+            font-size: 2rem;
+            position: absolute;
+            opacity: 0.3;
+        }
+
+        .testimonial-text::before {
+            content: "“";
+            left: 0;
+            top: -10px;
+            animation: fadeInOut 3s infinite;
+        }
+
+        .testimonial-text::after {
+            content: "”";
+            right: 0;
+            bottom: -20px;
+            animation: fadeInOut 3s infinite 1.5s;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .testimonial-location {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .testimonial-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .testimonial-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .testimonial-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+            border-color: var(--primary-dark);
+            animation: pulse 1s infinite;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 5%;
+            background: var(--gradient-primary);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            bottom: -120px;
+            left: -120px;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: rotate 30s linear infinite reverse;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .cta-section p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.05rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-button-secondary {
+            background: transparent;
+            color: white;
+            padding: 0.85rem 2rem;
+            border: 2px solid white;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: float 3s ease-in-out infinite 1s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button-secondary:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            padding: 60px 5%;
+            background: var(--white);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            max-width: 1200px;
+            margin: 2.5rem auto 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 250px;
+            cursor: pointer;
+            animation: fadeIn 1s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+        .gallery-item:nth-child(2) { animation-delay: 0.2s; }
+        .gallery-item:nth-child(3) { animation-delay: 0.3s; }
+        .gallery-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 1.5rem 1.25rem 1.25rem;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .gallery-overlay p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 3rem 5% 1.5rem;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-size: 1.25rem;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+            opacity: 0;
+            animation: slideInRight 0.5s ease-out;
+            animation-fill-mode: forwards;
+        }
+
+        .footer-links li:nth-child(1) { animation-delay: 0.1s; }
+        .footer-links li:nth-child(2) { animation-delay: 0.2s; }
+        .footer-links li:nth-child(3) { animation-delay: 0.3s; }
+        .footer-links li:nth-child(4) { animation-delay: 0.4s; }
+        .footer-links li:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .footer-links a {
+            color: #CBD5E1;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            color: white;
+            background: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .social-links a:nth-child(1) { animation-delay: 0.1s; }
+        .social-links a:nth-child(2) { animation-delay: 0.2s; }
+        .social-links a:nth-child(3) { animation-delay: 0.3s; }
+        .social-links a:nth-child(4) { animation-delay: 0.4s; }
+        .social-links a:nth-child(5) { animation-delay: 0.5s; }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-5px) scale(1.1);
+            animation: none;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            max-width: 1400px;
+            margin: 0 auto;
+            color: #CBD5E1;
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+            
+            .floating-image {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0.5rem 3%;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .top-bar-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .top-bar a {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                box-shadow: var(--shadow);
+                padding: 1rem 5%;
+                z-index: 999;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .hero {
+                padding: 60px 5% 50px;
+            }
+            
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .navbar {
+                padding: 0.75rem 5%;
+            }
+
+            .logo-img {
+                height: 40px;
+            }
+
+            .logo-text .brand {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-bar a {
+                padding: 0.35rem 0.85rem;
+                font-size: 0.85rem;
+            }
+
+            .hero-text h1 {
+                font-size: 1.75rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .service-card, .feature, .step {
+                padding: 1.5rem 1.25rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button, .cta-button-secondary {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-slide {
+                padding: 2rem 1.5rem;
+            }
+
+            .testimonial-text {
+                padding: 0 0.5rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Login Bar -->
+    <div class="top-bar">
+        <div class="top-bar-links">
+            <a href="{% url 'customer_login' %}" class="customer-login">
+                <i class="fas fa-user-injured"></i> Customer Login
+            </a>
+            <a href="{% url 'nurse_login' %}" class="nurse-login">
+                <i class="fas fa-user-nurse"></i> Nurse Login
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <img src="{% static 'image/home.jpg' %}" alt="Medical Didi Logo" class="logo-img">
+            </a>
+
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#features">Why Choose Us</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#contact">Contact</a>
+            </div>
+            
+            <a href="{% url 'public_add_patient' %}" class="cta-button">Book Now</a>
+            
+            <div class="mobile-menu" aria-label="Open navigation menu">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="floating-image floating-1">
+            <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Nurse providing care">
+        </div>
+        <div class="floating-image floating-2">
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Elderly patient care">
+        </div>
+        <div class="floating-image floating-3">
+            <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Post-operative care">
+        </div>
+
+        <div class="hero-grid">
+            <div class="hero-text">
+                <h1>Professional <span>Home Nursing</span> Care at Your Doorstep</h1>
+                <p>Certified nurses providing compassionate, personalized care for post-operative recovery, elderly care, and chronic illness management in the comfort of your home.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'public_add_patient' %}" class="cta-button"><i class="fas fa-calendar-check"></i> Book Now</a>
+                    <a href="#services" class="cta-button-secondary"><i class="fas fa-stethoscope"></i> Our Services</a>
+                    <a href="{% url 'public_add_nurse' %}" class="cta-button" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);"><i class="fas fa-user-nurse"></i> Join as Nurse</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Happy Families</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Care Available</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Expert Nurses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-subtitle">We provide comprehensive home nursing care tailored to individual needs with certified professionals.</p>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-user-injured" aria-hidden="true"></i></div>
+                <h3>Post-operative Care</h3>
+                <p>Specialized nursing care for patients recovering from surgery, including wound care, medication management, and rehabilitation support.</p>
+                <a href="{% url 'public_add_patient' %}" class="cta-button" style="padding: 0.6rem 1.25rem; margin-top: 0.75rem; font-size: 0.9rem;">Book Now</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-heart" aria-hidden="true"></i></div>
+                <h3>Elderly Care</h3>
+                <p>Compassionate assistance with daily activities, medication reminders, companionship, and health monitoring for seniors.</p>
+                <a href="{% url 'public_add_patient' %}" class="cta-button" style="padding: 0.6rem 1.25rem; margin-top: 0.75rem; font-size: 0.9rem;">Book Now</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-syringe" aria-hidden="true"></i></div>
+                <h3>Injection & IV Support</h3>
+                <p>Safe administration of injections, IV fluids, and medication under proper medical supervision at your convenience.</p>
+                <a href="{% url 'public_add_patient' %}" class="cta-button" style="padding: 0.6rem 1.25rem; margin-top: 0.75rem; font-size: 0.9rem;">Book Now</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-procedures" aria-hidden="true"></i></div>
+                <h3>Bedridden Patient Care</h3>
+                <p>Complete care including positioning, hygiene, feeding, and pressure sore prevention for bedridden patients.</p>
+                <a href="{% url 'public_add_patient' %}" class="cta-button" style="padding: 0.6rem 1.25rem; margin-top: 0.75rem; font-size: 0.9rem;">Book Now</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-dumbbell" aria-hidden="true"></i></div>
+                <h3>Physiotherapy Assistance</h3>
+                <p>Support with prescribed exercises, mobility training, and rehabilitation under guidance for faster recovery.</p>
+                <a href="{% url 'public_add_patient' %}" class="cta-button" style="padding: 0.6rem 1.25rem; margin-top: 0.75rem; font-size: 0.9rem;">Book Now</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-baby" aria-hidden="true"></i></div>
+                <h3>Mother & Baby Care</h3>
+                <p>Postnatal care for new mothers and newborn care assistance including feeding support and health monitoring.</p>
+                <a href="{% url 'public_add_patient' %}" class="cta-button" style="padding: 0.6rem 1.25rem; margin-top: 0.75rem; font-size: 0.9rem;">Book Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Why Choose Medical Didi</h2>
+        <p class="section-subtitle">We're committed to providing the highest quality home healthcare with these advantages.</p>
+        
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-user-shield" aria-hidden="true"></i></div>
+                <h3>Verified Nurses</h3>
+                <p>All our nurses are certified, background-checked, and have verified credentials.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
+                <h3>24/7 Availability</h3>
+                <p>Round-the-clock care available, including emergency night shifts and weekends.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-rupee-sign" aria-hidden="true"></i></div>
+                <h3>Affordable Plans</h3>
+                <p>Flexible pricing with daily, weekly, and monthly packages to suit every budget.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-stethoscope" aria-hidden="true"></i></div>
+                <h3>Medical Supervision</h3>
+                <p>Regular supervision by senior doctors and periodic health assessments.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
+                <h3>Care at Home</h3>
+                <p>Receive quality medical care in the comfort and safety of your own home.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-headset" aria-hidden="true"></i></div>
+                <h3>Dedicated Support</h3>
+                <p>24/7 customer support to address any concerns or changes in care needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Get started with home nursing in three simple steps</p>
+        
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-icon"><i class="fas fa-phone-alt" aria-hidden="true"></i></div>
+                <h3>Contact Us</h3>
+                <p>Call or fill our online form with patient details and care requirements.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-icon"><i class="fas fa-user-check" aria-hidden="true"></i></div>
+                <h3>Nurse Matching</h3>
+                <p>We match you with the most suitable certified nurse based on your needs.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-icon"><i class="fas fa-hands-helping" aria-hidden="true"></i></div>
+                <h3>Begin Care</h3>
+                <p>Your nurse arrives at the scheduled time to start personalized care at home.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Gallery -->
+    <section class="image-gallery" id="gallery">
+        <h2 class="section-title">Our Care Gallery</h2>
+        <p class="section-subtitle">Moments of compassion and professional care that define our service</p>
+        
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Professional nurse providing care">
+                <div class="gallery-overlay">
+                    <h4>Professional Care</h4>
+                    <p>Certified nurses providing expert medical attention</p>
+                </div>
+            </div>
+            
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Elderly patient with nurse">
+                <div class="gallery-overlay">
+                    <h4>Elderly Support</h4>
+                    <p>Compassionate care for senior citizens</p>
+                </div>
+            </div>
+            
+            <div class="gallery-item">
+                <img src="https://ritecare.in/sites/default/files/inline-images/new_born_bab_and_mocare.jpg" alt="Mother and baby care">
+                <div class="gallery-overlay">
+                    <h4>Mother & Baby</h4>
+                    <p>Postnatal and newborn care services</p>
+                </div>
+            </div>
+            
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Home nursing service">
+                <div class="gallery-overlay">
+                    <h4>Home Nursing</h4>
+                    <p>Medical care in the comfort of your home</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <h2 class="section-title">Patient Stories</h2>
+        <p class="section-subtitle">Hear from families who have experienced our compassionate care</p>
+        
+        <div class="testimonial-container">
+            <div class="testimonial-slide active">
+                <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Priya Sharma" />
+                <div class="stars" aria-label="5 star rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"After my father's knee surgery, we were worried about post-operative care. Medical Didi provided an excellent nurse who not only took care of his medications and wound dressing but also helped with physiotherapy. His recovery was much faster than expected!"</p>
+                <p class="testimonial-author">Priya Sharma</p>
+                <p class="testimonial-location">New Delhi</p>
+            </div>
+            
+            <div class="testimonial-slide">
+                <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Rajesh Kumar" />
+                <div class="stars" aria-label="5 star rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Our nurse from Medical Didi has been caring for my bedridden mother for 3 months now. She is punctual, compassionate, and highly skilled. The regular updates and medical supervision give us peace of mind."</p>
+                <p class="testimonial-author">Rajesh Kumar</p>
+                <p class="testimonial-location">Bhubaneswar</p>
+            </div>
+            
+            <div class="testimonial-slide">
+                <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Anjali Patel" />
+                <div class="stars" aria-label="4 star rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </div>
+                <p class="testimonial-text">"As a working professional, I couldn't give my diabetic father the care he needed. Medical Didi's nurse manages his insulin injections, diet, and regular checkups. The service is reliable and affordable."</p>
+                <p class="testimonial-author">Anjali Patel</p>
+                <p class="testimonial-location">Bangalore</p>
+            </div>
+            
+            <div class="testimonial-nav">
+                <div class="testimonial-dot active" data-slide="0"></div>
+                <div class="testimonial-dot" data-slide="1"></div>
+                <div class="testimonial-dot" data-slide="2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="booking">
+        <h2>Ready to Experience Quality Home Care?</h2>
+        <p>Book a certified nurse today and give your loved ones the care they deserve in the comfort of home.</p>
+        <div class="cta-buttons">
+            <a href="tel:+919876543210" class="cta-button"><i class="fas fa-phone-alt" style="margin-right: 8px;"></i> Call Now: +91 98765 43210</a>
+            <a href="#contact" class="cta-button-secondary"><i class="fas fa-envelope" style="margin-right: 8px;"></i> Send Message</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Medical Didi</h3>
+                <p>Your trusted partner for professional home nursing care. We bring quality healthcare to your doorstep with certified nurses and compassionate service.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#home"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="#services"><i class="fas fa-chevron-right"></i> Services</a></li>
+                    <li><a href="#features"><i class="fas fa-chevron-right"></i> Why Choose Us</a></li>
+                    <li><a href="#gallery"><i class="fas fa-chevron-right"></i> Gallery</a></li>
+                    <li><a href="#testimonials"><i class="fas fa-chevron-right"></i> Testimonials</a></li>
+                    <li><a href="{% url 'admin_login' %}"><i class="fas fa-chevron-right"></i> Admin</a></li>
+                    <li><a href="{% url 'sub_admin_login' %}"><i class="fas fa-chevron-right"></i> Subadmin</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Our Services</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Post-operative Care</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Elderly Care</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Injection Support</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Bedridden Care</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Mother & Baby Care</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> 123 Health Street, Medical City, India</a></li>
+                    <li><a href="tel:+919876543210"><i class="fas fa-phone"></i> +91 98765 43210</a></li>
+                    <li><a href="tel:+911234567890"><i class="fas fa-phone"></i> +91 12345 67890</a></li>
+                    <li><a href="mailto:care@medicaldidi.com"><i class="fas fa-envelope"></i> care@medicaldidi.com</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> 24/7 Available</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Medical Didi. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Testimonial Slider
+            const slides = document.querySelectorAll('.testimonial-slide');
+            const dots = document.querySelectorAll('.testimonial-dot');
+            let currentSlide = 0;
+            
+            function showSlide(n) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                currentSlide = (n + slides.length) % slides.length;
+                
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }
+            
+            dots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    showSlide(parseInt(this.getAttribute('data-slide')));
+                });
+            });
+            
+            // Auto slide change every 6 seconds
+            setInterval(() => {
+                showSlide(currentSlide + 1);
+            }, 6000);
+            
+            // Mobile menu toggle
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const navLinks = document.querySelector('.nav-links');
+            
+            mobileMenu.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                const icon = mobileMenu.querySelector('i');
+                if (icon.classList.contains('fa-bars')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Close menu when a link is clicked
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                        const icon = mobileMenu.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.service-card, .feature, .step, .gallery-item').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Parallax effect for floating images
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const floatingImages = document.querySelectorAll('.floating-image');
+                
+                floatingImages.forEach((img, index) => {
+                    const speed = 0.1 + (index * 0.02);
+                    img.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.02}deg)`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

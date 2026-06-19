@@ -1,0 +1,224 @@
+{% extends "subadmin/sub_admin_dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{% url 'subadmin_patient_list' %}" class="btn btn-pink" style="background: white; border: 2px solid var(--primary-pink); color: var(--primary-pink); margin-right:10px;">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <h2>{% if reassign %}Reassign Nurse to{% else %}Assign Nurse to{% endif %} {{ patient.full_name }}</h2>
+</div>
+
+<!-- Patient Info Section -->
+<div class="dashboard-card" style="margin-bottom:20px;">
+    <h4 style="color:var(--dark-pink); font-weight:600; margin-bottom:15px;">
+        <i class="fas fa-user-injured"></i> Patient Details
+    </h4>
+    <div class="row">
+        <div class="col-md-4">
+            <p style="margin-bottom:5px;">
+                <strong style="color:var(--primary-pink);"><i class="fas fa-phone"></i> Phone:</strong> {{ patient.phone }}
+            </p>
+        </div>
+        <div class="col-md-4">
+            <p style="margin-bottom:5px;">
+                <strong style="color:var(--primary-pink);"><i class="fas fa-envelope"></i> Email:</strong> {{ patient.email }}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p style="margin-bottom:5px;">
+                <strong style="color:var(--primary-pink);"><i class="fas fa-map-marker-alt"></i> Address:</strong> {{ patient.address }}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <p style="margin-bottom:5px;">
+                <strong style="color:var(--primary-pink);"><i class="fas fa-map-pin"></i> Pin Code:</strong> {{ patient.pin_code }}
+            </p>
+        </div>
+        <div class="col-md-8">
+            <p style="margin-bottom:5px;">
+                <strong style="color:var(--primary-pink);"><i class="fas fa-user-tag"></i> Representative:</strong> {{ patient.patient_representative_name }} ({{ patient.patient_representative_phone }})
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <form method="POST" action="{% url 'subadmin_submit_nurse_assignment' patient.id %}">
+        {% csrf_token %}
+        
+        <!-- Search Bar -->
+        <div style="margin-bottom:20px;">
+            <label style="color:var(--dark-pink); font-weight:600; font-size:1.1rem; display:block; margin-bottom:8px;">
+                <i class="fas fa-search"></i> Search Nurse
+            </label>
+            <input type="text" id="mySearch" class="form-control" style="width: 100%; padding:10px; border:2px solid #eee; border-radius:8px;" 
+                   placeholder="Type name, pin or address...">
+            <button type="button" id="doSearch" class="btn btn-pink" style="margin-top:10px;">Search</button>
+            <button type="button" id="doReset" class="btn btn-light" style="margin-top:10px; border:2px solid #ddd;">Reset</button>
+        </div>
+        
+        <!-- Nurse List -->
+        <div style="margin-bottom:20px;">
+            <h3 style="color:var(--dark-pink); font-weight:600;">
+                <i class="fas fa-user-nurse"></i> Available Nurses
+            </h3>
+            
+            {% if nurses %}
+            <div id="nurseList">
+                {% for nurse in nurses %}
+                <div class="nurse-item" 
+                     data-name="{{ nurse.full_name }}" 
+                     data-pin="{{ nurse.pin_code }}" 
+                     data-address="{{ nurse.address }}"
+                     style="border:2px solid #fce4ec; border-radius:10px; padding:15px; margin-bottom:10px;"
+                     id="wrapper-{{ nurse.id }}">
+                    
+                    <div style="display:flex; gap:15px; align-items:flex-start; justify-content:space-between;">
+                        <div style="display:flex; gap:15px; align-items:flex-start; cursor:pointer;" onclick="selectThisNurse('{{ nurse.id }}')">
+                            <div>
+                                {% if nurse.profile_image %}
+                                <img src="{{ nurse.profile_image.url }}" width="60" height="60" class="rounded-circle">
+                                {% else %}
+                                <div style="width:60px; height:60px; background:#fce4ec; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <i class="fas fa-user-nurse" style="font-size:1.5rem; color:var(--primary-pink);"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div style="flex:1;">
+                                <div style="display:flex; gap:10px; align-items:center;">
+                                    <input type="radio" name="nurse_id" value="{{ nurse.id }}" id="rad-{{ nurse.id }}" required>
+                                    <label for="rad-{{ nurse.id }}" style="color:var(--dark-pink); font-size:1.2rem; font-weight:600; cursor:pointer;">
+                                        {{ nurse.full_name }}
+                                    </label>
+                                </div>
+                                
+                                <p style="margin:5px 0; color:#666;">
+                                    <i class="fas fa-phone" style="width:20px;"></i> {{ nurse.phone }}
+                                </p>
+                                <p style="margin:5px 0; color:#666;">
+                                    <i class="fas fa-map-marker-alt" style="width:20px;"></i> {{ nurse.address }}, {{ nurse.pin_code }}
+                                </p>
+                                <p style="margin:5px 0; color:#666;">
+                                    <i class="fas fa-briefcase" style="width:20px;"></i> {{ nurse.experience }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <!-- View Button -->
+                            <a href="{% url 'nurse_view' nurse.id %}" class="btn btn-info btn-sm" title="View Nurse Details" style="margin-bottom:5px;">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- No Results -->
+            <div id="noFound" style="display:none; text-align:center; padding:40px;">
+                <i class="fas fa-search" style="font-size:3rem; color:var(--primary-pink);"></i>
+                <h3 style="margin-top:10px;">No Nurse Found</h3>
+                <p style="color:#666;">Try a different search term!</p>
+            </div>
+            
+            <!-- Remark -->
+            <div style="margin-top:20px;">
+                <label style="color:var(--dark-pink); font-weight:600; display:block; margin-bottom:5px;">
+                    <i class="fas fa-comment"></i> Remark (Optional)
+                </label>
+                <textarea name="remark" class="form-control" rows="3" placeholder="Write any remark..."></textarea>
+            </div>
+            
+            <!-- Submit -->
+            <div style="margin-top:20px; text-align:center;">
+                <button type="submit" class="btn btn-pink" style="padding:12px 30px; font-size:1.1rem;">
+                    <i class="fas fa-check"></i> {% if reassign %}Reassign Nurse{% else %}Assign Nurse{% endif %}
+                </button>
+            </div>
+            
+            {% else %}
+            <div style="text-align:center; padding:40px;">
+                <i class="fas fa-inbox" style="font-size:3rem; color:var(--primary-pink);"></i>
+                <h3 style="margin-top:10px;">No Nurses Available</h3>
+                <p style="color:#666;">All nurses are already assigned!</p>
+                <a href="{% url 'subadmin_patient_list' %}" class="btn btn-pink">Back</a>
+            </div>
+            {% endif %}
+        </div>
+        
+    </form>
+</div>
+
+<script>
+    // Select Nurse
+    function selectThisNurse(nid) {
+        document.getElementById('rad-' + nid).checked = true;
+        
+        // Reset all items
+        var allItems = document.querySelectorAll('.nurse-item');
+        for (var i = 0; i < allItems.length; i++) {
+            allItems[i].style.border = "2px solid #fce4ec";
+            allItems[i].style.background = "white";
+        }
+        
+        // Highlight selected
+        document.getElementById('wrapper-' + nid).style.border = "3px solid var(--primary-pink)";
+        document.getElementById('wrapper-' + nid).style.background = "#fff0f5";
+    }
+    
+    // Search Button
+    document.getElementById('doSearch').addEventListener('click', function() {
+        var searchText = document.getElementById('mySearch').value.trim().toLowerCase();
+        var items = document.querySelectorAll('.nurse-item');
+        var foundAny = false;
+        
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var n = item.getAttribute('data-name').toLowerCase();
+            var p = item.getAttribute('data-pin').toLowerCase();
+            var a = item.getAttribute('data-address').toLowerCase();
+            
+            if (searchText === '' || n.indexOf(searchText) !== -1 || p.indexOf(searchText) !== -1 || a.indexOf(searchText) !== -1) {
+                item.style.display = 'block';
+                foundAny = true;
+            } else {
+                item.style.display = 'none';
+            }
+        }
+        
+        if (searchText !== '' && !foundAny) {
+            document.getElementById('nurseList').style.display = 'none';
+            document.getElementById('noFound').style.display = 'block';
+        } else {
+            document.getElementById('nurseList').style.display = 'block';
+            document.getElementById('noFound').style.display = 'none';
+        }
+    });
+    
+    // Reset Button
+    document.getElementById('doReset').addEventListener('click', function() {
+        document.getElementById('mySearch').value = '';
+        var items = document.querySelectorAll('.nurse-item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].style.display = 'block';
+        }
+        document.getElementById('nurseList').style.display = 'block';
+        document.getElementById('noFound').style.display = 'none';
+    });
+    
+    // Enter Key
+    document.getElementById('mySearch').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('doSearch').click();
+        }
+    });
+</script>
+{% endblock %}

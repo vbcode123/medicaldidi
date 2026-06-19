@@ -1,0 +1,84 @@
+{% extends "subadmin/sub_admin_dashboard.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}Monthly Statistics - Medical Didi{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-chart-bar fa-2x me-3" style="color: var(--primary-pink);"></i>
+            <div>
+                <h2>Monthly Statistics</h2>
+                <p class="mb-0 text-muted">Nurse attendance and leave summary</p>
+            </div>
+        </div>
+        <form method="GET" class="d-flex gap-2">
+            <select name="year" class="form-select" style="width: 150px;">
+                {% for y in "2020,2021,2022,2023,2024,2025,2026"|split:"," %}
+                <option value="{{ y }}" {% if y|stringformat:"s" == year|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+            <select name="month" class="form-select" style="width: 150px;">
+                {% for m in "1,2,3,4,5,6,7,8,9,10,11,12"|split:"," %}
+                <option value="{{ m }}" {% if m|stringformat:"s" == month|stringformat:"s" %}selected{% endif %}>
+                    {% if m == "1" %}January{% elif m == "2" %}February{% elif m == "3" %}March{% elif m == "4" %}April{% elif m == "5" %}May{% elif m == "6" %}June{% elif m == "7" %}July{% elif m == "8" %}August{% elif m == "9" %}September{% elif m == "10" %}October{% elif m == "11" %}November{% elif m == "12" %}December{% endif %}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> View</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            {% if stats_list %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background: var(--light-pink);">
+                        <tr>
+                            <th scope="col">Nurse</th>
+                            <th scope="col" class="text-center">Assigned Duty Days</th>
+                            <th scope="col" class="text-center">Present Days</th>
+                            <th scope="col" class="text-center">Approved Leave Days</th>
+                            <th scope="col" class="text-center">Absent Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stats in stats_list %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if stats.nurse.profile_image %}
+                                    <img src="{{ stats.nurse.profile_image.url }}" alt="{{ stats.nurse.full_name }}" class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
+                                    {% else %}
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width:40px; height:40px; background: linear-gradient(135deg, #10b981, #059669);">
+                                        <i class="fas fa-user-nurse text-white"></i>
+                                    </div>
+                                    {% endif %}
+                                    <span class="fw-semibold">{{ stats.nurse.full_name }}</span>
+                                </div>
+                            </td>
+                            <td class="text-center"><strong>{{ stats.assigned_duty_days }}</strong></td>
+                            <td class="text-center"><span class="text-success"><i class="fas fa-check-circle me-1"></i>{{ stats.present_days }}</span></td>
+                            <td class="text-center"><span class="text-info"><i class="fas fa-calendar-times me-1"></i>{{ stats.approved_leave_days }}</span></td>
+                            <td class="text-center"><span class="text-danger"><i class="fas fa-times-circle me-1"></i>{{ stats.absent_days }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-chart-bar fa-3x mb-3" style="color: var(--primary-pink);"></i>
+                <h5>No Statistics Available</h5>
+                <p class="text-muted">No nurses found or no data for this month.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

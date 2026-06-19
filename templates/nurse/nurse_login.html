@@ -1,0 +1,210 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nurse Login - Medical Didi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{% static 'image/oops.png' %}" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #c2185b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-home:hover {
+            color: #880e4f;
+            transform: translateX(-5px);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(236, 64, 122, 0.25);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #ec407a 0%, #c2185b 100%);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-img {
+            height: 80px;
+            width: auto;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(236, 64, 122, 0.2);
+        }
+
+        .login-card h2 {
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 35px;
+            font-size: 0.95rem;
+        }
+
+        .form-floating {
+            margin-bottom: 20px;
+        }
+
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            height: calc(3.5rem + 2px);
+            line-height: 1.25;
+            border: 2px solid #fce4ec;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem;
+            color: #880e4f;
+        }
+
+        .form-floating > .form-control:focus,
+        .form-floating > .form-select:focus {
+            border-color: #ec407a;
+            box-shadow: 0 0 0 0.25rem rgba(236, 64, 122, 0.15);
+        }
+
+        .btn-pink {
+            background: linear-gradient(135deg, #ec407a 0%, #c2185b 100%);
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(236, 64, 122, 0.3);
+        }
+
+        .btn-pink:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(236, 64, 122, 0.4);
+            color: white;
+        }
+
+        .btn-pink:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-icon {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 35px 25px;
+            }
+
+            .logo-img {
+                height: 65px;
+            }
+
+            .login-card h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'home' %}" class="back-home">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="login-card">
+        <div class="logo-section">
+            <img src="{% static 'image/oops.png' %}" alt="Medical Didi" class="logo-img">
+        </div>
+        <h2><i class="fas fa-user-nurse me-2 btn-icon"></i> Nurse Login</h2>
+        <p class="login-subtitle">Sign in to access your dashboard</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-floating">
+                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                <label for="phone"><i class="fas fa-phone-alt me-2"></i>Phone Number</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
+            </div>
+            <button type="submit" class="btn btn-pink w-100">
+                <i class="fas fa-sign-in-alt me-2 btn-icon"></i>Login
+            </button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            {% if error %}
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed!',
+                    text: '{{ error }}',
+                    confirmButtonText: 'Okay',
+                    confirmButtonColor: '#ec407a'
+                });
+            {% endif %}
+        });
+    </script>
+</body>
+</html>

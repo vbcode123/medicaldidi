@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Didi - Admin Login</title>
+    <style>
+        /* 1. Basic Styling and Centering */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Slightly modern font */
+        }
+
+        body {
+            /* Changed to Pink background */
+            background-color: #FFE6E6; 
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 60px; 
+        }
+
+        /* 2. Home Button/Header Section */
+        .header-bar {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #FFE6E6; /* Pink header bar */
+            padding: 10px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Slightly deeper shadow */
+            z-index: 1000;
+            text-align: right; 
+        }
+        
+        .home-button {
+            text-decoration: none;
+            /* Changed: Pink button */
+            background-color: #E75480; 
+            color: white; 
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .home-button:hover {
+            /* Changed: Slightly darker pink on hover */
+            background-color: #D44D73; 
+        }
+
+
+        /* 3. Login Container Styling */
+        .login-container {
+            width: 90%; 
+            max-width: 400px;
+            padding: 25px; /* Increased padding */
+            background-color: white;
+            border-radius: 12px; /* Slightly more rounded corners */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Elevated shadow */
+            text-align: center;
+            margin-bottom: 20px; 
+        }
+
+        .login-container h2 {
+            /* Changed: Pink heading color */
+            color: #E75480; 
+            margin-bottom: 25px; 
+            font-size: 1.8em; 
+            /* Changed: Pink bottom border */
+            border-bottom: 3px solid #E75480; 
+            padding-bottom: 10px;
+        }
+
+        /* 4. Form Styling */
+        label {
+            display: block;
+            margin-bottom: 5px; 
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+
+        input[type="text"], 
+        input[type="password"] {
+            width: 100%;
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 1px solid #ced4da;
+            border-radius: 8px; /* Slightly more rounded inputs */
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus, 
+        input[type="password"]:focus {
+            /* Changed: Pink focus border */
+            border-color: #E75480; 
+            outline: none;
+            box-shadow: 0 0 8px rgba(231, 84, 128, 0.3); /* Pink shadow on focus */
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            color: #c82333; /* Darker red text */
+            background-color: #FFE6E6;
+            border: 1px solid #E75480;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Login Button Styling */
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            /* Changed: Pink button color */
+            background-color: #E75480; 
+            color: white; 
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em; 
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            /* Changed: Darker Pink on hover */
+            background-color: #D44D73;
+            transform: translateY(-2px); /* Lift slightly on hover */
+            box-shadow: 0 4px 10px rgba(231, 84, 128, 0.3);
+        }
+
+        /* 5. Mobile-Specific Media Query */
+        @media (max-width: 480px) {
+            body {
+                padding-top: 60px; 
+                background-color: #FFE6E6;
+            }
+
+            .login-container {
+                width: 100%; /* Maximize width on very small screens */
+                padding: 20px;
+                border-radius: 0; /* Make it full width/borderless on very small screens */
+                box-shadow: none; 
+            }
+
+            .header-bar {
+                padding: 8px 15px;
+                background-color: #FFE6E6;
+            }
+
+            .home-button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+                background-color: #E75480;
+            }
+            
+            .home-button:hover {
+                background-color: #D44D73;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <a href="/" class="home-button">🏠 Home</a> 
+    </div>
+    
+    {% load static %}
+
+    <div class="login-container" style="text-align:center;">
+
+        <img src="{% static 'image/home.jpg' %}" 
+            alt="Admin Logo" 
+            style="height:80px; width:auto; margin-bottom:15px;">
+
+        <h2>🔑 Administrator Login</h2>
+
+        
+        {% if error %}
+        <p class="error-message">🚨 {{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label for="id_email">📧 Email:</label>
+            <input type="text" id="id_email" name="email" required placeholder="Enter admin email">
+            
+            <label for="id_password">🔒 Password:</label>
+            <input type="password" id="id_password" name="password" required placeholder="Enter password">
+
+            <button type="submit">LOGIN</button>
+        </form>
+    </div>
+</body>
+</html>

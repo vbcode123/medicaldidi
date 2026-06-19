@@ -1,0 +1,109 @@
+{% extends "admin/admin_dashboard.html" %}
+{% load static %}
+
+{% block title %}Edit Sub Admin: {{ subadmin.name|default:"N/A" }}{% endblock %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-refresh-2 icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>
+                            Edit Sub Admin
+                            <div class="page-title-subheading">Update the details for Sub Administrator: **{{ subadmin.name|default:"N/A" }}**.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title">Update Details</h5>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-8 col-lg-6">
+                                <div class="form-group">
+                                    <label for="id_name">**Name:**</label>
+                                    <input type="text" class="form-control" id="id_name" name="name" 
+                                           value="{{ subadmin.name|default:'' }}" required placeholder="Enter Full Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_phone">**Phone:**</label>
+                                    <input type="text" class="form-control" id="id_phone" name="phone" 
+                                           value="{{ subadmin.phone|default:'' }}" required placeholder="Enter Phone Number">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_address">**Address:**</label>
+                                    <textarea class="form-control" id="id_address" name="address" rows="3" required placeholder="Enter Full Address">{{ subadmin.address|default:'' }}</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_joining_date">**Joining Date:**</label>
+                                    <input type="date" class="form-control" id="id_joining_date" name="joining_date" 
+                                           value="{{ subadmin.joining_date|date:'Y-m-d'|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="mt-4 mb-4">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label>**Aadhaar Image:**</label>
+                                <div class="mb-2">
+                                    {% if subadmin.aadhaar_image %}
+                                        <img src="{{ subadmin.aadhaar_image.url }}" width="100" height="100"
+                                             class="img-thumbnail rounded" alt="Current Aadhaar Image" style="object-fit: cover;">
+                                        <small class="d-block text-muted mt-1">Current Image</small>
+                                    {% else %}
+                                        <div class="text-danger">No Aadhaar Image uploaded.</div>
+                                    {% endif %}
+                                </div>
+                                <input type="file" name="aadhaar_image" class="form-control-file border p-1 rounded">
+                                <small class="form-text text-muted">Leave blank to keep the current image.</small>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label>**Profile Image:**</label>
+                                <div class="mb-2">
+                                    {% if subadmin.profile_photo %}
+                                        <img src="{{ subadmin.profile_photo.url }}" width="100" height="100"
+                                             class="img-thumbnail rounded" alt="Current Profile Photo" style="object-fit: cover;">
+                                        <small class="d-block text-muted mt-1">Current Image</small>
+                                    {% else %}
+                                        <div class="text-danger">No Profile Photo uploaded.</div>
+                                    {% endif %}
+                                </div>
+                                <input type="file" name="profile_photo" class="form-control-file border p-1 rounded">
+                                <small class="form-text text-muted">Leave blank to keep the current photo.</small>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-sync-alt"></i> Update Details
+                            </button>
+                            <a href="{% url 'sub_admin_list' %}" class="btn btn-secondary ml-2">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% endblock content %}

@@ -1,0 +1,949 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <title>Nurse Dashboard - Medical Didi</title>
+    <meta name="description" content="Medical Didi Nurse Dashboard">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Favicon -->
+    <link rel="icon" href="{% static 'image/oops.png' %}" type="image/png">
+
+    <style>
+        :root {
+            --primary-pink: #ec407a;
+            --dark-pink: #c2185b;
+            --light-pink: #fce4ec;
+            --soft-pink: #fff5f7;
+            --hover-pink: #f8bbd9;
+            --sidebar-width: 280px;
+            --primary-green: #10b981;
+            --primary-blue: #0ea5e9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--soft-pink);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .nurse-header {
+            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+            border-bottom: 2px solid #ffcdd2;
+            padding: 0.75rem 1.5rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1040;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-logo h4 {
+            color: var(--dark-pink);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--dark-pink) 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(236, 64, 122, 0.4);
+            color: white;
+        }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            background: var(--primary-pink);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #fce4ec 0%, #f8bbd9 100%);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 70px;
+            overflow-y: auto;
+            border-right: 2px solid #ffcdd2;
+            z-index: 1030;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        .menu-heading {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-pink);
+            font-weight: 600;
+        }
+
+        .menu-item {
+            margin: 0.25rem 0;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1.5rem;
+            color: #880e4f;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-link:hover {
+            background-color: var(--hover-pink);
+            color: var(--dark-pink);
+            border-left-color: var(--primary-pink);
+        }
+
+        .menu-link.active {
+            background: linear-gradient(90deg, var(--hover-pink) 0%, transparent 100%);
+            border-left-color: var(--primary-pink);
+            color: var(--dark-pink);
+            font-weight: 600;
+        }
+
+        .menu-link i {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 70px;
+            padding: 1.5rem;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Page Title */
+        .page-header {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--primary-pink);
+            box-shadow: 0 2px 10px rgba(236, 64, 122, 0.1);
+        }
+
+        .page-header h2 {
+            color: var(--dark-pink);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Cards */
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 15px rgba(236, 64, 122, 0.1);
+            border: 1px solid #ffcdd2;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid var(--primary-pink);
+            box-shadow: 0 4px 20px rgba(236, 64, 122, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-name {
+            color: var(--dark-pink);
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-phone {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-item {
+            background: linear-gradient(135deg, #fce4ec 0%, #fff5f7 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-pink);
+        }
+
+        .info-label {
+            color: var(--dark-pink);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        /* Buttons */
+        .btn-pink {
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--dark-pink) 100%);
+            border: none;
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-pink:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(236, 64, 122, 0.4);
+            color: white;
+        }
+        
+        .btn-green {
+            background: linear-gradient(135deg, var(--primary-green), #059669);
+            border: none;
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-green:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+            color: white;
+        }
+        
+        .btn-blue {
+            background: linear-gradient(135deg, var(--primary-blue), #0284c7);
+            border: none;
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-blue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(14,165,233,0.4);
+            color: white;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-pink);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-pink);
+            border-radius: 4px;
+        }
+
+        /* Mobile Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1025;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle {
+                display: flex;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            .nurse-header,
+            .sidebar,
+            .sidebar-toggle {
+                display: none !important;
+            }
+
+            .main-content {
+                margin-left: 0;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Header -->
+    <header class="nurse-header">
+        <div class="header-logo">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <img src="{% static 'image/oops.png' %}" alt="Medical Didi">
+            <h4>Nurse Panel</h4>
+        </div>
+        <div class="header-actions">
+            <span class="text-dark me-3"><i class="fas fa-user-circle me-2"></i>{{ nurse.full_name }}</span>
+            <a href="{% url 'nurse_logout' %}" class="btn btn-logout">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="{% url 'nurse_dashboard' %}" class="menu-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'nurse_apply_leave' %}" class="menu-link">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Apply for Leave</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="{% url 'nurse_logout' %}" class="menu-link text-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-user-nurse fa-2x me-3" style="color: var(--primary-pink);"></i>
+                <div>
+                    <h2>My Dashboard</h2>
+                    <p class="mb-0 text-muted">Welcome back, {{ nurse.full_name }}!</p>
+                </div>
+            </div>
+        </div>
+
+        {% if active_leave %}
+            <div class="alert alert-warning mb-4 rounded-3" role="alert">
+                <i class="fas fa-calendar-times fa-lg me-2"></i>
+                <strong>You are on approved leave!</strong> 
+                From {{ active_leave.from_date }} to {{ active_leave.to_date }}. Reason: {{ active_leave.reason }}
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="dashboard-card profile-card">
+                    {% if nurse.profile_image %}
+                        <img src="{{ nurse.profile_image.url }}" alt="{{ nurse.full_name }}" class="profile-img">
+                    {% else %}
+                        <div class="profile-img d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);">
+                            <i class="fas fa-user-nurse fa-5x text-white"></i>
+                        </div>
+                    {% endif %}
+                    <h2 class="profile-name">{{ nurse.full_name }}</h2>
+                    <p class="profile-phone"><i class="fas fa-phone me-2"></i>{{ nurse.phone }}</p>
+                    {% if nurse.is_approved %}
+                        <span class="badge bg-success" style="font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 25px;">
+                            <i class="fas fa-check-circle me-1"></i>Approved
+                        </span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark" style="font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 25px;">
+                            <i class="fas fa-clock me-1"></i>Pending Approval
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="dashboard-card">
+                    <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">
+                        <i class="fas fa-info-circle me-2"></i>Personal Information
+                    </h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">{{ nurse.email }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Date of Birth</div>
+                            <div class="info-value">{{ nurse.dob }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Experience</div>
+                            <div class="info-value">{{ nurse.experience }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Joining Date</div>
+                            <div class="info-value">{{ nurse.joining_date }}</div>
+                        </div>
+                        <div class="info-item" style="grid-column: 1 / -1;">
+                            <div class="info-label">Address</div>
+                            <div class="info-value">{{ nurse.address }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">
+                        <i class="fas fa-procedures me-2"></i>Assigned Patients & Attendance
+                    </h4>
+                    {% if assignments or temporary_assignments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead style="background: var(--light-pink);">
+                                    <tr>
+                                        <th scope="col">Patient</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Today's Status</th>
+                                        <th scope="col" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assignment in assignments %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if assignment.patient.profile_image %}
+                                                    <img src="{{ assignment.patient.profile_image.url }}" alt="{{ assignment.patient.full_name }}" class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
+                                                {% else %}
+                                                    <div class="rounded-circle bg-pink-100 d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; background: #fce4ec;">
+                                                        <i class="fas fa-user text-pink-600" style="color: var(--primary-pink);"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <span class="fw-semibold">{{ assignment.patient.full_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>{{ assignment.patient.phone }}</td>
+                                        <td>
+                                            {% with today_attendance=assignment.attendances.all|dictsortreversed:"date"|first %}
+                                                {% if today_attendance %}
+                                                    <div class="mb-1">
+                                                        <strong>Check In:</strong> 
+                                                        {% if today_attendance.check_in_time %}
+                                                            <span class="text-success">{{ today_attendance.check_in_time|date:"h:i A" }}</span>
+                                                            {% if today_attendance.check_in_status == 'Approved' %}
+                                                                <span class="badge bg-success ms-1">Approved</span>
+                                                            {% elif today_attendance.check_in_status == 'Pending' %}
+                                                                <span class="badge bg-warning text-dark ms-1">Pending</span>
+                                                            {% else %}
+                                                                <span class="badge bg-danger ms-1">Rejected</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <span class="text-muted">Not checked in</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <strong>Check Out:</strong> 
+                                                        {% if today_attendance.check_out_time %}
+                                                            <span class="text-success">{{ today_attendance.check_out_time|date:"h:i A" }}</span>
+                                                            {% if today_attendance.check_out_status == 'Approved' %}
+                                                                <span class="badge bg-success ms-1">Approved</span>
+                                                            {% elif today_attendance.check_out_status == 'Pending' %}
+                                                                <span class="badge bg-warning text-dark ms-1">Pending</span>
+                                                            {% else %}
+                                                                <span class="badge bg-danger ms-1">Rejected</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <span class="text-muted">Not checked out</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if today_attendance.total_duty_display %}
+                                                        <div class="mt-1 small text-primary">
+                                                            <i class="fas fa-clock me-1"></i>Total Duty: {{ today_attendance.total_duty_display }}
+                                                        </div>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">No attendance for today</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td class="text-center">
+                                            <!-- View Patient -->
+                                            <a href="{% url 'nurse_view_patient' assignment.patient.id %}" class="btn btn-blue btn-sm me-1" title="View Patient">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            
+                                            {% if assignment.status == 'Approved' %}
+                                                {% with today_attendance=assignment.attendances.all|dictsortreversed:"date"|first %}
+                                                    {% if not today_attendance or not today_attendance.check_in_time %}
+                                                        <button onclick="confirmAction('{% url 'nurse_check_in' assignment.id %}', 'Are you sure you want to start duty?', 'success')" class="btn btn-green btn-sm me-1" title="Start Duty">
+                                                            <i class="fas fa-play"></i> Start Duty
+                                                        </button>
+                                                    {% elif today_attendance.check_in_status == 'Approved' and not today_attendance.check_out_time %}
+                                                        <button onclick="confirmAction('{% url 'nurse_check_out' today_attendance.id %}', 'Are you sure you want to end duty?', 'warning')" class="btn btn-pink btn-sm" title="End Duty">
+                                                            <i class="fas fa-stop"></i> End Duty
+                                                        </button>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% elif assignment.status == 'Pending' %}
+                                                <button onclick="confirmAction('{% url 'approve_assignment' assignment.id %}', 'Are you sure you want to allow this assignment?', 'success')" class="btn btn-success btn-sm me-1" title="Allow">
+                                                    <i class="fas fa-check"></i> Allow
+                                                </button>
+                                                <button onclick="confirmAction('{% url 'reject_assignment' assignment.id %}', 'Are you sure you want to deny this assignment?', 'error')" class="btn btn-danger btn-sm" title="Deny">
+                                                    <i class="fas fa-times"></i> Deny
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                    {% for temp_assign in temporary_assignments %}
+                                    <tr style="background: #fff3cd;">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-yellow-100 d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; background: #fff3cd;">
+                                                    <i class="fas fa-user-nurse text-warning"></i>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-semibold">{{ temp_assign.patient.full_name }}</span>
+                                                    <br><small class="text-muted">Temporary Assignment</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ temp_assign.patient.phone }}</td>
+                                        <td>
+                                            {% with today_attendance=temp_assign.original_assignment.attendances.all|dictsortreversed:"date"|first %}
+                                                {% if temp_assign.status == 'Approved' and today_attendance and today_attendance.nurse.id == nurse.id %}
+                                                    <div class="mb-1">
+                                                        <strong>Check In:</strong> 
+                                                        {% if today_attendance.check_in_time %}
+                                                            <span class="text-success">{{ today_attendance.check_in_time|date:"h:i A" }}</span>
+                                                            {% if today_attendance.check_in_status == 'Approved' %}
+                                                                <span class="badge bg-success ms-1">Approved</span>
+                                                            {% elif today_attendance.check_in_status == 'Pending' %}
+                                                                <span class="badge bg-warning text-dark ms-1">Pending</span>
+                                                            {% else %}
+                                                                <span class="badge bg-danger ms-1">Rejected</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <span class="text-muted">Not checked in</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <strong>Check Out:</strong> 
+                                                        {% if today_attendance.check_out_time %}
+                                                            <span class="text-success">{{ today_attendance.check_out_time|date:"h:i A" }}</span>
+                                                            {% if today_attendance.check_out_status == 'Approved' %}
+                                                                <span class="badge bg-success ms-1">Approved</span>
+                                                            {% elif today_attendance.check_out_status == 'Pending' %}
+                                                                <span class="badge bg-warning text-dark ms-1">Pending</span>
+                                                            {% else %}
+                                                                <span class="badge bg-danger ms-1">Rejected</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <span class="text-muted">Not checked out</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if today_attendance.total_duty_display %}
+                                                        <div class="mt-1 small text-primary">
+                                                            <i class="fas fa-clock me-1"></i>Total Duty: {{ today_attendance.total_duty_display }}
+                                                        </div>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">
+                                                        {% if temp_assign.status == 'Pending' %}
+                                                            Waiting for your approval
+                                                        {% elif temp_assign.status == 'Rejected' %}
+                                                            Assignment rejected
+                                                        {% else %}
+                                                            No attendance for today
+                                                        {% endif %}
+                                                    </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td class="text-center">
+                                            <!-- View Patient -->
+                                            <a href="{% url 'nurse_view_patient' temp_assign.patient.id %}" class="btn btn-blue btn-sm me-1" title="View Patient">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            
+                                            {% if temp_assign.status == 'Pending' %}
+                                                <button onclick="confirmAction('{% url 'approve_temp_assignment' temp_assign.id %}', 'Are you sure you want to allow this temporary assignment?', 'success')" class="btn btn-success btn-sm me-1" title="Allow">
+                                                    <i class="fas fa-check"></i> Allow
+                                                </button>
+                                                <button onclick="confirmAction('{% url 'reject_temp_assignment' temp_assign.id %}', 'Are you sure you want to deny this temporary assignment?', 'error')" class="btn btn-danger btn-sm" title="Deny">
+                                                    <i class="fas fa-times"></i> Deny
+                                                </button>
+                                            {% elif temp_assign.status == 'Approved' %}
+                                                {% with today_attendance=temp_assign.original_assignment.attendances.all|dictsortreversed:"date"|first %}
+                                                    {% if not today_attendance or today_attendance.nurse.id != nurse.id or not today_attendance.check_in_time %}
+                                                        <button onclick="confirmAction('{% url 'nurse_temp_check_in' temp_assign.id %}', 'Are you sure you want to start duty?', 'success')" class="btn btn-green btn-sm me-1" title="Start Duty">
+                                                            <i class="fas fa-play"></i> Start Duty
+                                                        </button>
+                                                    {% elif today_attendance.check_in_status == 'Approved' and not today_attendance.check_out_time %}
+                                                        <button onclick="confirmAction('{% url 'nurse_check_out' today_attendance.id %}', 'Are you sure you want to end duty?', 'warning')" class="btn btn-pink btn-sm" title="End Duty">
+                                                            <i class="fas fa-stop"></i> End Duty
+                                                        </button>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x mb-3" style="color: var(--primary-pink);"></i>
+                            <h5>No Patients Assigned Yet</h5>
+                            <p class="text-muted">Wait for sub-admin to assign patients to you.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Attendance History -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">
+                        <i class="fas fa-history me-2"></i>Attendance History
+                    </h4>
+                    {% if attendances %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead style="background: var(--light-pink);">
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Patient</th>
+                                        <th scope="col">Check In</th>
+                                        <th scope="col">Check Out</th>
+                                        <th scope="col">Total Duty</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attendance in attendances %}
+                                    <tr>
+                                        <td>{{ attendance.date }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if attendance.patient.profile_image %}
+                                                    <img src="{{ attendance.patient.profile_image.url }}" alt="{{ attendance.patient.full_name }}" class="rounded-circle me-2" width="35" height="35" style="object-fit: cover;">
+                                                {% else %}
+                                                    <div class="rounded-circle bg-pink-100 d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; background: #fce4ec;">
+                                                        <i class="fas fa-user text-pink-600" style="color: var(--primary-pink);"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <span class="fw-semibold">{{ attendance.patient.full_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if attendance.check_in_time %}
+                                                {{ attendance.check_in_time|date:"h:i A" }}
+                                                {% if attendance.check_in_status == 'Approved' %}
+                                                    <span class="badge bg-success ms-1">Approved</span>
+                                                {% elif attendance.check_in_status == 'Pending' %}
+                                                    <span class="badge bg-warning text-dark ms-1">Pending</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger ms-1">Rejected</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if attendance.check_out_time %}
+                                                {{ attendance.check_out_time|date:"h:i A" }}
+                                                {% if attendance.check_out_status == 'Approved' %}
+                                                    <span class="badge bg-success ms-1">Approved</span>
+                                                {% elif attendance.check_out_status == 'Pending' %}
+                                                    <span class="badge bg-warning text-dark ms-1">Pending</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger ms-1">Rejected</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if attendance.total_duty_display %}
+                                                <strong class="text-primary">{{ attendance.total_duty_display }}</strong>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if attendance.check_in_status == 'Approved' and attendance.check_out_status == 'Approved' %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Complete
+                                                </span>
+                                            {% elif attendance.check_in_status == 'Rejected' or attendance.check_out_status == 'Rejected' %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times-circle me-1"></i>Incomplete
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="fas fa-clock me-1"></i>Pending
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-alt fa-3x mb-3" style="color: var(--primary-pink);"></i>
+                            <h5>No Attendance Records Yet</h5>
+                            <p class="text-muted">Start duty for your patients to begin attendance tracking.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Leave History -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <h4 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">
+                        <i class="fas fa-calendar-times me-2"></i>Leave History
+                    </h4>
+                    {% if leave_history %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead style="background: var(--light-pink);">
+                                    <tr>
+                                        <th scope="col">From</th>
+                                        <th scope="col">To</th>
+                                        <th scope="col">Reason</th>
+                                        <th scope="col">Status</th>
+                                        {% if leave_history.0.admin_remark %}
+                                        <th scope="col">Admin Remark</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for leave in leave_history %}
+                                    <tr>
+                                        <td>{{ leave.from_date|date:"d M Y" }}</td>
+                                        <td>{{ leave.to_date|date:"d M Y" }}</td>
+                                        <td>{{ leave.reason|truncatechars:50 }}</td>
+                                        <td>
+                                            {% if leave.status == 'Pending' %}
+                                                <span class="badge bg-warning text-dark" style="font-size:0.9rem;">
+                                                    <i class="fas fa-clock me-1"></i>Pending
+                                                </span>
+                                            {% elif leave.status == 'Approved' %}
+                                                <span class="badge bg-success" style="font-size:0.9rem;">
+                                                    <i class="fas fa-check-circle me-1"></i>Approved
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger" style="font-size:0.9rem;">
+                                                    <i class="fas fa-times-circle me-1"></i>Rejected
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        {% if leave.admin_remark %}
+                                        <td><small class="text-muted">{{ leave.admin_remark }}</small></td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x mb-3" style="color: var(--primary-pink);"></i>
+                            <h5>No Leave History</h5>
+                            <p class="text-muted mb-3">You haven't applied for any leave yet.</p>
+                            <a href="{% url 'nurse_apply_leave' %}" class="btn btn-pink">
+                                <i class="fas fa-calendar-plus me-2"></i>Apply for Leave
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Sidebar Toggle for Mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        });
+
+        // Close sidebar when clicking overlay
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('show');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        });
+
+        // Confirm Action with SweetAlert
+        function confirmAction(url, message, icon) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: message,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#dc2626',
+                confirmButtonText: 'Yes, proceed!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        }
+
+        // SweetAlert for Django Messages
+        document.addEventListener("DOMContentLoaded", function () {
+            {% if messages %}
+                {% for message in messages %}
+                    Swal.fire({
+                        icon: '{{ message.tags|default:"info" }}',
+                        title: '{{ message }}',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
+</body>
+</html>

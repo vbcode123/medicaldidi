@@ -1,0 +1,191 @@
+{% extends "subadmin/sub_admin_dashboard.html" %}
+{% load static %}
+
+{% block title %}Attendance Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-calendar-check fa-2x me-3" style="color: var(--primary-pink);"></i>
+        <div>
+            <h2>Attendance Management</h2>
+            <p class="mb-0 text-muted">View and manage all nurse attendance records.</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <h5 class="card-title mb-4">Filter Records</h5>
+    
+    <form method="GET" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label for="date-filter" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date-filter" name="date" value="{{ filter_date }}">
+            </div>
+            <div class="col-md-4">
+                <label for="nurse-filter" class="form-label">Nurse</label>
+                <select class="form-select" id="nurse-filter" name="nurse">
+                    <option value="">All Nurses</option>
+                    {% for nurse in nurses %}
+                        <option value="{{ nurse.id }}" {% if filter_nurse == nurse.id|stringformat:"s" %}selected{% endif %}>{{ nurse.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="patient-filter" class="form-label">Patient</label>
+                <select class="form-select" id="patient-filter" name="patient">
+                    <option value="">All Patients</option>
+                    {% for patient in patients %}
+                        <option value="{{ patient.id }}" {% if filter_patient == patient.id|stringformat:"s" %}selected{% endif %}>{{ patient.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-pink">
+                <i class="fas fa-filter me-2"></i>Filter
+            </button>
+            <a href="{% url 'subadmin_attendance_list' %}" class="btn btn-secondary ms-2">
+                <i class="fas fa-redo me-2"></i>Reset
+            </a>
+        </div>
+    </form>
+
+    <h5 class="card-title mt-4">Attendance Records</h5>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ message }}',
+                    confirmButtonText: 'Okay'
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+    
+    {% if attendances %}
+        <div class="table-responsive">
+            <table id="attendance-table" class="display table table-striped table-bordered table-pink">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Nurse</th>
+                        <th>Patient</th>
+                        <th>Check In</th>
+                        <th>Check In Status</th>
+                        <th>Check Out</th>
+                        <th>Check Out Status</th>
+                        <th>Total Duty</th>
+                        <th>Overall Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attendance in attendances %}
+                        <tr>
+                            <td>{{ attendance.date|date:"d M Y" }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if attendance.nurse.profile_image %}
+                                        <img src="{{ attendance.nurse.profile_image.url }}" alt="{{ attendance.nurse.full_name }}" style="width: 40px; height:40px; border-radius:50%; object-fit: cover;">
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center" style="width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, #10b981, #059669);">
+                                            <i class="fas fa-user-nurse text-white"></i>
+                                        </div>
+                                    {% endif %}
+                                    <span class="fw-semibold">{{ attendance.nurse.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if attendance.patient.profile_image %}
+                                        <img src="{{ attendance.patient.profile_image.url }}" alt="{{ attendance.patient.full_name }}" style="width:40px; height:40px; border-radius:50%; object-fit: cover;">
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center" style="width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, #ec407a, #c2185b);">
+                                            <i class="fas fa-user-injured text-white"></i>
+                                        </div>
+                                    {% endif %}
+                                    <span class="fw-semibold">{{ attendance.patient.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if attendance.check_in_time %}
+                                    {{ attendance.check_in_time|date:"h:i A" }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attendance.check_in_status == 'Approved' %}
+                                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Approved</span>
+                                {% elif attendance.check_in_status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>
+                                {% elif attendance.check_in_status == 'Rejected' %}
+                                    <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rejected</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attendance.check_out_time %}
+                                    {{ attendance.check_out_time|date:"h:i A" }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attendance.check_out_status == 'Approved' %}
+                                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Approved</span>
+                                {% elif attendance.check_out_status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>
+                                {% elif attendance.check_out_status == 'Rejected' %}
+                                    <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rejected</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attendance.total_duty_display %}
+                                    <strong class="text-primary">{{ attendance.total_duty_display }}</strong>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attendance.check_in_status == 'Approved' and attendance.check_out_status == 'Approved' %}
+                                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Complete</span>
+                                {% elif attendance.check_in_status == 'Rejected' or attendance.check_out_status == 'Rejected' %}
+                                    <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>Incomplete</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-calendar-alt fa-3x mb-3 text-muted"></i>
+            <h5 class="text-muted">No Attendance Records Found</h5>
+            <p class="text-muted">No attendance records match the current filters.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#attendance-table').DataTable({
+            'order': [[0, 'desc']]
+        });
+    });
+</script>
+{% endblock %}

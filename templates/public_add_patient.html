@@ -1,0 +1,167 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Book Now - Medical Didi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1000px;
+        }
+        .card {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ec407a 0%, #c2185b 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c2185b 0%, #a8104f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3);
+        }
+        .section-title {
+            color: #c2185b;
+            font-weight: 700;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .back-home {
+            text-decoration: none;
+            color: white;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .back-home:hover {
+            color: #d1fae5;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-home">
+            <i class="fas fa-arrow-left me-2"></i> Back to Home
+        </a>
+        <div class="card">
+            <div class="card-header text-center">
+                <h2 class="mb-0"><i class="fas fa-calendar-check me-2"></i> Book a Nurse</h2>
+                <p class="mb-0 opacity-90 mt-2">Register to book home nursing care services</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                {% if messages %}
+                    {% for message in messages %}
+                        <script>
+                            Swal.fire({
+                                icon: '{{ message.tags }}',
+                                title: '{% if message.tags == "success" %}Success!{% else %}Error!{% endif %}',
+                                text: '{{ message }}',
+                                confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                if (result.isConfirmed && '{{ message.tags }}' == 'success') {
+                                    window.location.href = '{% url 'home' %}';
+                                }
+                            });
+                        </script>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h4 class="section-title mb-4 pb-2 border-bottom"><i class="fas fa-user me-2"></i> Personal Information</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_full_name" class="form-label">Full Name</label>
+                            <input type="text" id="id_full_name" name="full_name" class="form-control" placeholder="Enter Full Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_phone" class="form-label">Mobile Number</label>
+                            <input type="text" id="id_phone" name="phone" class="form-control" placeholder="Enter Mobile Number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_email" class="form-label">Email Address</label>
+                            <input type="email" id="id_email" name="email" class="form-control" placeholder="Enter Email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_pin_code" class="form-label">Pin Code</label>
+                            <input type="text" id="id_pin_code" name="pin_code" class="form-control" placeholder="Enter Pin Code" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="id_address" class="form-label">Address</label>
+                            <textarea id="id_address" name="address" class="form-control" rows="3" placeholder="Enter Full Address" required></textarea>
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-user-tie me-2"></i> Patient Representative</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_patient_representative_name" class="form-label">Representative Name</label>
+                            <input type="text" id="id_patient_representative_name" name="patient_representative_name" class="form-control" placeholder="Enter Representative Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_patient_representative_phone" class="form-label">Representative Phone</label>
+                            <input type="text" id="id_patient_representative_phone" name="patient_representative_phone" class="form-control" placeholder="Enter Representative Phone" required>
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-file-alt me-2"></i> Documents</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-4">
+                            <label for="id_profile_image" class="form-label">Profile Photo (Optional)</label>
+                            <input type="file" id="id_profile_image" name="profile_image" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <label for="id_aadhaar_image" class="form-label">Aadhaar Card (Required)</label>
+                            <input type="file" id="id_aadhaar_image" name="aadhaar_image" class="form-control" accept="image/*" required>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <label for="id_agreement_image" class="form-label">Agreement (Optional)</label>
+                            <input type="file" id="id_agreement_image" name="agreement_image" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-key me-2"></i> Login Details</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" id="id_password" name="password" class="form-control" placeholder="Create Password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" id="id_confirm_password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5 pt-4 border-top">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i> Submit Registration
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

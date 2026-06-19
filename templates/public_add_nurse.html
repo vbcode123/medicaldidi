@@ -1,0 +1,196 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Join as Nurse - Medical Didi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fce4ec 0%, #fff8fb 100%);
+            font-family: 'Poppins', sans-serif;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1000px;
+        }
+        .card {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(236, 64, 122, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+        }
+        .section-title {
+            color: #059669;
+            font-weight: 700;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #ec407a 0%, #c2185b 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .back-home {
+            text-decoration: none;
+            color: white;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .back-home:hover {
+            color: #ffd9e6;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #ec407a;
+            box-shadow: 0 0 0 0.25rem rgba(236, 64, 122, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-home">
+            <i class="fas fa-arrow-left me-2"></i> Back to Home
+        </a>
+        <div class="card">
+            <div class="card-header text-center">
+                <h2 class="mb-0"><i class="fas fa-heartbeat me-2"></i> Join Our Nursing Team</h2>
+                <p class="mb-0 opacity-90 mt-2">Apply to become a certified home care nurse with Medical Didi</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                {% if messages %}
+                    {% for message in messages %}
+                        <script>
+                            Swal.fire({
+                                icon: '{{ message.tags }}',
+                                title: '{% if message.tags == "success" %}Success!{% else %}Error!{% endif %}',
+                                text: '{{ message }}',
+                                confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                if (result.isConfirmed && '{{ message.tags }}' == 'success') {
+                                    window.location.href = '{% url 'home' %}';
+                                }
+                            });
+                        </script>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h4 class="section-title mb-4 pb-2 border-bottom"><i class="fas fa-user me-2"></i> Personal Information</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_full_name" class="form-label">Full Name</label>
+                            <input type="text" id="id_full_name" name="full_name" class="form-control" placeholder="Enter Full Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_gender" class="form-label">Gender</label>
+                            <select id="id_gender" name="gender" class="form-select" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_dob" class="form-label">Date of Birth</label>
+                            <input type="date" id="id_dob" name="dob" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_email" class="form-label">Email Address</label>
+                            <input type="email" id="id_email" name="email" class="form-control" placeholder="Enter Email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_phone" class="form-label">Mobile Number</label>
+                            <input type="text" id="id_phone" name="phone" class="form-control" placeholder="Enter Mobile Number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_pin_code" class="form-label">Pin Code</label>
+                            <input type="text" id="id_pin_code" name="pin_code" class="form-control" placeholder="Enter Pin Code" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="id_address" class="form-label">Address</label>
+                            <textarea id="id_address" name="address" class="form-control" rows="3" placeholder="Enter Full Address" required></textarea>
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-phone-alt me-2"></i> Emergency Contact</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_parents_name" class="form-label">Parent's/Guardian's Name</label>
+                            <input type="text" id="id_parents_name" name="parents_name" class="form-control" placeholder="Enter Parent's/Guardian's Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_parents_contact_number" class="form-label">Parent's Contact Number</label>
+                            <input type="text" id="id_parents_contact_number" name="parents_contact_number" class="form-control" placeholder="Enter Contact Number" required>
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-briefcase me-2"></i> Work & Experience</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_experience" class="form-label">Experience (Years)</label>
+                            <input type="text" id="id_experience" name="experience" class="form-control" placeholder="E.g., 2 Years" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_joining_date" class="form-label">Preferred Joining Date</label>
+                            <input type="date" id="id_joining_date" name="joining_date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-file-alt me-2"></i> Documents</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-3">
+                            <label for="id_profile_image" class="form-label">Profile Photo</label>
+                            <input type="file" id="id_profile_image" name="profile_image" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label for="id_aadhaar_image" class="form-label">Aadhaar Card</label>
+                            <input type="file" id="id_aadhaar_image" name="aadhaar_image" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label for="id_certificate_image" class="form-label">Nursing Certificate</label>
+                            <input type="file" id="id_certificate_image" name="certificate_image" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label for="id_parents_aadhaar_image" class="form-label">Parent's Aadhaar</label>
+                            <input type="file" id="id_parents_aadhaar_image" name="parents_aadhaar_image" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+
+                    <h4 class="section-title mt-5 mb-4 pb-2 border-bottom"><i class="fas fa-key me-2"></i> Login Details</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" id="id_password" name="password" class="form-control" placeholder="Create Password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" id="id_confirm_password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5 pt-4 border-top">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i> Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

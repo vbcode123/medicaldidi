@@ -1,0 +1,229 @@
+{% extends "admin/admin_dashboard.html" %}
+{% load static %}
+
+{% block title %}Nurse List{% endblock %}
+
+{% block content %}
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-users icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>
+                            Nurse List
+                            <div class="page-title-subheading">Manage and view registered nurses.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title">Registered Nurses</h5>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <script>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: '{{ message }}',
+                                    confirmButtonText: 'Okay'
+                                });
+                            </script>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div class="table-responsive">
+                        <table id="nurse-list-table" class="display table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>SL</th>
+                                    <th>Profile</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th class="text-center">Status</th>
+                                    <th>Address</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for n in nurses %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+
+                                    <td class="text-center">
+                                        {% if n.profile_image %}
+                                            <img src="{{ n.profile_image.url }}" alt="{{ n.full_name }}'s Profile" 
+                                                 width="60" height="60" 
+                                                 style="object-fit:cover; border-radius:50%;">
+                                        {% else %}
+                                            <i class="fas fa-user-circle fa-2x text-muted"></i>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td>{{ n.full_name }}</td>
+                                    
+                                    <td>{{ n.phone|default:"N/A" }}</td>
+                                    <td class="text-center">
+                                        {% if n.is_approved %}
+                                            <span class="badge bg-success">Approved</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ n.address|default:"N/A" }}</td>
+
+                                    <td class="text-center">
+                                <a href="{% url 'admin_nurse_view' n.id %}" 
+                                    class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                {% if n.is_approved %}
+                                    <a href="{% url 'admin_nurse_edit' n.id %}" 
+                                        class="btn btn-warning btn-sm ml-1">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <button class="btn btn-danger btn-sm ml-1 btn-delete" data-id="{{ n.id }}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-success btn-sm ml-1 btn-approve" data-id="{{ n.id }}">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="btn btn-danger btn-sm ml-1 btn-reject" data-id="{{ n.id }}">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                {% endif %}
+                            </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#nurse-list-table').DataTable({
+            // DataTables को buttons के साथ customize करें
+            "dom": '<"dt-buttons"Bf><"clear">lrtip',
+            "paging": true,
+            "autoWidth": true,
+            "responsive": true, // मोबाइल-फ्रेंडली डिस्प्ले के लिए
+            // Profile image कॉलम को sorting से बाहर करने के लिए (ज़रूरी नहीं है)
+            "columnDefs": [
+                { "orderable": false, "targets": [1, 6] } 
+            ],
+            "buttons": [
+                {   
+                    extend: 'copy', 
+                    className: 'btn btn-secondary btn-sm', 
+                    text: '<i class="fas fa-copy"></i> Copy' 
+                },
+                {   
+                    extend: 'excel', 
+                    className: 'btn btn-secondary btn-sm', 
+                    text: '<i class="fas fa-file-excel"></i> Excel' 
+                },
+                {   
+                    extend: 'csv', 
+                    className: 'btn btn-secondary btn-sm', 
+                    text: '<i class="fas fa-file-csv"></i> CSV' 
+                },
+                {   
+                    extend: 'pdf', 
+                    className: 'btn btn-secondary btn-sm', 
+                    text: '<i class="fas fa-file-pdf"></i> PDF' 
+                },
+                {   
+                    extend: 'print', 
+                    className: 'btn btn-secondary btn-sm', 
+                    text: '<i class="fas fa-print"></i> Print' 
+                }
+            ]
+        });
+
+        // Approve button
+        $('.btn-approve').on('click', function() {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: 'Approve Nurse?',
+                text: "This nurse will be able to login after approval.",
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, approve!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/subadmin/nurse-approve/${id}/`;
+                }
+            });
+        });
+
+        // Reject button
+        $('.btn-reject').on('click', function() {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: 'Reject Nurse?',
+                text: "This nurse's application will be deleted.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, reject!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/subadmin/nurse-reject/${id}/`;
+                }
+            });
+        });
+
+        // Delete button
+        $('.btn-delete').on('click', function() {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this nurse!",
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/admin/nurse-delete/${id}/`;
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,191 @@
+{% extends "subadmin/sub_admin_dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-user-nurse fa-2x me-3" style="color: var(--primary-pink);"></i>
+        <div>
+            <h2>Nurse Details</h2>
+            <p class="mb-0 text-muted">View nurse profile and documents</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <h5 class="mb-3" style="color: var(--dark-pink); font-weight: 600;">Profile</h5>
+            {% if nurse.profile_image %}
+                <a href="{{ nurse.profile_image.url }}" target="_blank">
+                    <img src="{{ nurse.profile_image.url }}" alt="Profile" class="img-fluid rounded-circle shadow-sm" style="width: 180px; height: 180px; object-fit: cover;">
+                </a>
+            {% else %}
+                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 180px; height: 180px; background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);">
+                    <i class="fas fa-user-nurse fa-5x text-white"></i>
+                </div>
+                <p class="text-muted mt-2">No profile image</p>
+            {% endif %}
+            <h4 class="mt-3" style="color: var(--dark-pink);">{{ nurse.full_name }}</h4>
+            {% if nurse.is_approved %}
+                <span class="badge bg-success" style="font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 25px;">
+                    <i class="fas fa-check-circle me-1"></i>Approved
+                </span>
+            {% else %}
+                <span class="badge bg-warning text-dark" style="font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 25px;">
+                    <i class="fas fa-clock me-1"></i>Pending
+                </span>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-8">
+            <h5 class="mb-3" style="color: var(--dark-pink); font-weight: 600;">Personal Information</h5>
+            <div class="table-responsive">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%; color: var(--dark-pink);">Full Name</th>
+                            <td>{{ nurse.full_name }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Gender</th>
+                            <td>{{ nurse.gender }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Date of Birth</th>
+                            <td>{{ nurse.dob }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Phone</th>
+                            <td>{{ nurse.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Email</th>
+                            <td>{{ nurse.email }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Address</th>
+                            <td>{{ nurse.address }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Pin Code</th>
+                            <td>{{ nurse.pin_code }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Experience</th>
+                            <td>{{ nurse.experience }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Joining Date</th>
+                            <td>{{ nurse.joining_date }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Parent's Name</th>
+                            <td>{{ nurse.parents_name|default:"Not provided" }}</td>
+                        </tr>
+                        <tr>
+                            <th style="color: var(--dark-pink);">Parent's Contact</th>
+                            <td>{{ nurse.parents_contact_number|default:"Not provided" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="my-4">
+    
+    <h5 class="mb-3" style="color: var(--dark-pink); font-weight: 600;">
+        <i class="fas fa-procedures me-2"></i>Assigned Patients
+    </h5>
+    {% if nurse.nurse_assignments.all %}
+    <div class="table-responsive mb-4">
+        <table class="table table-hover">
+            <thead style="background: var(--light-pink);">
+                <tr>
+                    <th>Patient</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Remark</th>
+                    <th>Status</th>
+                    <th>Assigned Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in nurse.nurse_assignments.all %}
+                {% if assignment.status != 'Rejected' %}
+                <tr>
+                    <td>
+                        <a href="{% url 'subadmin_patient_view' assignment.patient.id %}" style="color:var(--dark-pink); font-weight:600;">
+                            {{ assignment.patient.full_name }}
+                        </a>
+                    </td>
+                    <td>{{ assignment.patient.phone }}</td>
+                    <td>{{ assignment.patient.address }}, {{ assignment.patient.pin_code }}</td>
+                    <td>{{ assignment.remark|default:"No remark" }}</td>
+                    <td>
+                        {% if assignment.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif assignment.status == 'Pending' %}
+                            <span class="badge bg-info">Pending</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ assignment.assigned_at|date:"d/m/Y h:i A" }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted mb-4">No patients assigned yet.</p>
+    {% endif %}
+    
+    <hr class="my-4">
+    
+    <h5 class="mb-3" style="color: var(--dark-pink); font-weight: 600;">Documents</h5>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <h6 class="fw-semibold mb-2" style="color: var(--dark-pink);">Aadhaar Card</h6>
+            {% if nurse.aadhaar_image %}
+                <a href="{{ nurse.aadhaar_image.url }}" target="_blank">
+                    <img src="{{ nurse.aadhaar_image.url }}" alt="Aadhaar" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: 100%; object-fit: contain;">
+                </a>
+            {% else %}
+                <p class="text-muted">No Aadhaar card uploaded</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-4">
+            <h6 class="fw-semibold mb-2" style="color: var(--dark-pink);">Certificate</h6>
+            {% if nurse.certificate_image %}
+                <a href="{{ nurse.certificate_image.url }}" target="_blank">
+                    <img src="{{ nurse.certificate_image.url }}" alt="Certificate" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: 100%; object-fit: contain;">
+                </a>
+            {% else %}
+                <p class="text-muted">No certificate uploaded</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-4">
+            <h6 class="fw-semibold mb-2" style="color: var(--dark-pink);">Parent's Aadhaar</h6>
+            {% if nurse.parents_aadhaar_image %}
+                <a href="{{ nurse.parents_aadhaar_image.url }}" target="_blank">
+                    <img src="{{ nurse.parents_aadhaar_image.url }}" alt="Parent's Aadhaar" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: 100%; object-fit: contain;">
+                </a>
+            {% else %}
+                <p class="text-muted">No parent's Aadhaar uploaded</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'subadmin_nurse_edit' nurse.id %}" class="btn btn-warning me-2">
+            <i class="fas fa-edit me-2"></i>Edit
+        </a>
+        <a href="{% url 'subadmin_nurse_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+</div>
+{% endblock content %}

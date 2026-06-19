@@ -1,0 +1,166 @@
+{% extends "subadmin/sub_admin_dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-user-nurse fa-2x me-3" style="color: var(--primary-pink);"></i>
+        <div>
+            <h2>Nurse List</h2>
+            <p class="mb-0 text-muted">List of all registered home care nurses.</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <h5 class="mb-3" style="color: var(--dark-pink); font-weight: 600;">
+        <i class="fas fa-list me-2"></i>Registered Nurses
+    </h5>
+    
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead style="background: var(--light-pink);">
+                <tr>
+                    <th>#</th>
+                    <th class="text-center">Profile</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in nurses %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td class="text-center">
+                        {% if n.profile_image %}
+                            <img src="{{ n.profile_image.url }}" 
+                                 alt="{{ n.full_name }} Profile"
+                                 width="50" height="50" 
+                                 style="object-fit:cover; border-radius:50%; border: 1px solid #ddd;">
+                        {% else %}
+                            <div class="rounded-circle bg-pink-100 d-flex align-items-center justify-content-center mx-auto" 
+                                 style="width:50px; height:50px;">
+                                <i class="fas fa-user-nurse" style="color:var(--primary-pink);"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ n.full_name|default:"N/A" }}</td>
+                    <td>{{ n.phone|default:"N/A" }}</td>
+                    <td class="text-center">
+                        {% if n.is_approved %}
+                            <span class="badge bg-success">Approved</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'nurse_view' n.id %}" class="btn btn-info btn-sm" title="View Details">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a href="{% url 'subadmin_nurse_edit' n.id %}" class="btn btn-warning btn-sm ms-1" title="Edit Details">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        {% if not n.is_approved %}
+                            <a href="{% url 'approve_nurse' n.id %}" class="btn btn-success btn-sm ms-1 btn-approve" title="Approve">
+                                <i class="fas fa-check"></i> Approve
+                            </a>
+                            <a href="{% url 'reject_nurse' n.id %}" class="btn btn-danger btn-sm ms-1 btn-reject" title="Reject">
+                                <i class="fas fa-times"></i> Reject
+                            </a>
+                        {% else %}
+                            <a href="{% url 'subadmin_nurse_delete' n.id %}" class="btn btn-danger btn-sm ms-1 btn-delete" title="Delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <i class="fas fa-inbox fa-3x mb-3" style="color: var(--primary-pink);"></i>
+                        <h5>No Nurses found.</h5>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        // Approve button
+        $('.btn-approve').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to approve this nurse!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, approve!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Reject button
+        $('.btn-reject').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to reject this nurse application!",
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, reject!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Delete button
+        $('.btn-delete').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this nurse!",
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+        
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: 'success',
+                    title: '{{ message }}',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+{% endblock extra_js %}

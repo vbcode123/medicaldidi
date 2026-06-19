@@ -1,0 +1,162 @@
+{% extends "subadmin/sub_admin_dashboard.html" %}
+{% load static %}
+
+{% block title %}Edit Nurse{% endblock %}
+
+{% block content %}
+
+<div class="app-main">
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-edit icon-gradient bg-mean-fruit"></i>
+                        </div>
+                        <div>
+                            Edit Nurse
+                            <div class="page-title-subheading">Update nurse details below.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title">Edit Nurse Form</h5>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <h6 class="text-primary border-bottom pb-2">Personal Information</h6>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_full_name">Full Name</label>
+                                <input type="text" id="id_full_name" name="full_name" class="form-control" value="{{ nurse.full_name }}" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_gender">Gender</label>
+                                <select id="id_gender" name="gender" class="form-control" required>
+                                    <option value="Male" {% if nurse.gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if nurse.gender == 'Female' %}selected{% endif %}>Female</option>
+                                    <option value="Other" {% if nurse.gender == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_dob">Date of Birth</label>
+                                <input type="date" id="id_dob" name="dob" class="form-control" value="{{ nurse.dob|date:'Y-m-d' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="id_email">Gmail ID (Login ID)</label>
+                                <input type="email" id="id_email" name="email" class="form-control" value="{{ nurse.email }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="id_phone">Mobile Number</label>
+                                <input type="text" id="id_phone" name="phone" class="form-control" value="{{ nurse.phone }}" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_pin_code">Pin Code</label>
+                                <input type="text" id="id_pin_code" name="pin_code" class="form-control" value="{{ nurse.pin_code }}" required>
+                            </div>
+                            
+                            <div class="col-md-12 mb-4">
+                                <label for="id_address">Address</label>
+                                <textarea id="id_address" name="address" class="form-control" rows="3" required>{{ nurse.address }}</textarea>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <h6 class="text-primary border-bottom pb-2">Emergency Contact Information</h6>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="id_parents_name">Parent's/Guardian's Full Name</label>
+                                <input type="text" id="id_parents_name" name="parents_name" class="form-control" value="{{ nurse.parents_name }}" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_parents_contact_number">Parent's Contact Number</label>
+                                <input type="text" id="id_parents_contact_number" name="parents_contact_number" class="form-control" value="{{ nurse.parents_contact_number }}" required>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <h6 class="text-primary border-bottom pb-2">Work & Experience Details</h6>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_experience">Experience (Years)</label>
+                                <input type="text" id="id_experience" name="experience" class="form-control" value="{{ nurse.experience }}" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_joining_date">Joining Date</label>
+                                <input type="date" id="id_joining_date" name="joining_date" class="form-control" value="{{ nurse.joining_date|date:'Y-m-d' }}" required>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <h6 class="text-primary border-bottom pb-2">Document Uploads</h6>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="id_profile_image">Profile Image</label>
+                                <input type="file" id="id_profile_image" name="profile_image" class="form-control-file border p-1 rounded">
+                                {% if nurse.profile_image %}
+                                    <small class="d-block mt-1">Current: <a href="{{ nurse.profile_image.url }}" target="_blank">View</a></small>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="id_aadhaar_image">Aadhaar Image (Nurse)</label>
+                                <input type="file" id="id_aadhaar_image" name="aadhaar_image" class="form-control-file border p-1 rounded">
+                                {% if nurse.aadhaar_image %}
+                                    <small class="d-block mt-1">Current: <a href="{{ nurse.aadhaar_image.url }}" target="_blank">View</a></small>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="id_certificate_image">Certificate Image</label>
+                                <input type="file" id="id_certificate_image" name="certificate_image" class="form-control-file border p-1 rounded">
+                                {% if nurse.certificate_image %}
+                                    <small class="d-block mt-1">Current: <a href="{{ nurse.certificate_image.url }}" target="_blank">View</a></small>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label for="id_parents_aadhaar_image">Parent's Aadhaar Image</label>
+                                <input type="file" id="id_parents_aadhaar_image" name="parents_aadhaar_image" class="form-control-file border p-1 rounded">
+                                {% if nurse.parents_aadhaar_image %}
+                                    <small class="d-block mt-1">Current: <a href="{{ nurse.parents_aadhaar_image.url }}" target="_blank">View</a></small>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <h6 class="text-primary border-bottom pb-2">Update Password (Optional)</h6>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password">New Password</label>
+                                <input type="password" id="id_password" name="password" class="form-control" placeholder="Enter new password (leave blank to keep current)">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Update Nurse
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% endblock content %}

@@ -1,0 +1,173 @@
+{% extends "admin/admin_dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-users fa-2x me-3" style="color: var(--primary-pink);"></i>
+        <div>
+            <h2>Patient List</h2>
+            <p class="mb-0 text-muted">Manage all registered patients</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="mb-0" style="color: var(--dark-pink); font-weight: 600;">
+            <i class="fas fa-list me-2"></i>All Patients
+        </h5>
+        <a href="{% url 'admin_add_patient' %}" class="btn btn-pink">
+            <i class="fas fa-plus me-2"></i>Add Patient
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead style="background: var(--light-pink);">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Profile</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Representative</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                        {% if patient.profile_image %}
+                            <img src="{{ patient.profile_image.url }}" alt="{{ patient.full_name }}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-pink-100 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: #fce4ec;">
+                                <i class="fas fa-user text-pink-600" style="color: var(--primary-pink);"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ patient.full_name }}</td>
+                    <td>{{ patient.phone }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ patient.patient_representative_name }}</td>
+                    <td>
+                        {% if patient.is_approved %}
+                            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Approved</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'admin_patient_view' patient.id %}" class="btn btn-info btn-sm" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        {% if patient.is_approved %}
+                            <a href="{% url 'admin_patient_edit' patient.id %}" class="btn btn-warning btn-sm ms-1" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_patient_delete' patient.id %}" class="btn btn-danger btn-sm ms-1 btn-delete" title="Delete" data-id="{{ patient.id }}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'approve_patient' patient.id %}" class="btn btn-success btn-sm ms-1 btn-approve" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{% url 'reject_patient' patient.id %}" class="btn btn-danger btn-sm ms-1 btn-reject" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-5">
+                        <i class="fas fa-inbox fa-3x mb-3" style="color: var(--primary-pink);"></i>
+                        <h5>No patients found</h5>
+                        <p>Add your first patient to get started!</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Delete button
+        $('.btn-delete').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ec407a',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Approve button
+        $('.btn-approve').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            Swal.fire({
+                title: 'Approve Patient?',
+                text: "This patient will be able to login after approval.",
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, approve!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Reject button
+        $('.btn-reject').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            Swal.fire({
+                title: 'Reject Patient?',
+                text: "This patient's registration will be deleted.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ec407a',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, reject!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // SweetAlert for messages
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: '{{ message.tags }}',
+                    title: '{{ message }}',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+{% endblock extra_js %}

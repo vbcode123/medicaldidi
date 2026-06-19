@@ -1,0 +1,86 @@
+{% extends "admin/admin_dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-user-plus fa-2x me-3" style="color: var(--primary-pink);"></i>
+        <div>
+            <h2>Add Sub Admin</h2>
+            <p class="mb-0 text-muted">Register a new sub-administrator account</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-card">
+    <h5 class="mb-4" style="color: var(--dark-pink); font-weight: 600;">
+        <i class="fas fa-user-cog me-2"></i>Sub Admin Registration Form
+    </h5>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row mb-3">
+            <label for="id_name" class="col-md-3 col-form-label fw-semibold">Full Name:</label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" id="id_name" name="name" required placeholder="Enter Full Name">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="id_phone" class="col-md-3 col-form-label fw-semibold">Phone Number:</label>
+            <div class="col-md-9">
+                <input type="tel" class="form-control" id="id_phone" name="phone" required placeholder="Enter Phone Number" pattern="[0-9]{10}">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="id_address" class="col-md-3 col-form-label fw-semibold">Address:</label>
+            <div class="col-md-9">
+                <textarea class="form-control" id="id_address" name="address" rows="3" required placeholder="Enter Full Address"></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="id_aadhaar_image" class="col-md-3 col-form-label fw-semibold">Aadhaar Image:</label>
+            <div class="col-md-9">
+                <input type="file" class="form-control" id="id_aadhaar_image" name="aadhaar_image" accept="image/*" required>
+                <div class="form-text text-muted">Upload a clear scan or photo of the Aadhaar card.</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="id_profile_photo" class="col-md-3 col-form-label fw-semibold">Profile Photo:</label>
+            <div class="col-md-9">
+                <input type="file" class="form-control" id="id_profile_photo" name="profile_photo" accept="image/*" required>
+                <div class="form-text text-muted">Upload a recent passport-size photo.</div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="id_joining_date" class="col-md-3 col-form-label fw-semibold">Joining Date:</label>
+            <div class="col-md-9">
+                <input type="date" class="form-control" id="id_joining_date" name="joining_date" required>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <label for="id_password" class="col-md-3 col-form-label fw-semibold">Password:</label>
+            <div class="col-md-9">
+                <input type="password" class="form-control" id="id_password" name="password" required placeholder="Create a strong password">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9 offset-md-3">
+                <button type="submit" class="btn btn-pink btn-lg">
+                    <i class="fas fa-save me-2"></i>Save Sub Admin
+                </button>
+                <a href="{% url 'sub_admin_list' %}" class="btn btn-outline-secondary btn-lg ms-2">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

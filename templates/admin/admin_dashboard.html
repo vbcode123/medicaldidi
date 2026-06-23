@@ -19,11 +19,11 @@
 
     <style>
         :root {
-            --primary-pink: #ec407a;
-            --dark-pink: #c2185b;
-            --light-pink: #fce4ec;
-            --soft-pink: #fff5f7;
-            --hover-pink: #f8bbd9;
+            --primary-teal: #009688;
+            --dark-teal: #00796b;
+            --light-teal: #e0f2f1;
+            --soft-teal: #f0fdfa;
+            --hover-teal: #b2dfdb;
             --sidebar-width: 280px;
         }
 
@@ -35,14 +35,14 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--soft-pink);
+            background-color: var(--soft-teal);
             overflow-x: hidden;
         }
 
         /* Header Styles */
         .admin-header {
-            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
-            border-bottom: 2px solid #ffcdd2;
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            border-bottom: 2px solid #80cbc4;
             padding: 0.75rem 1.5rem;
             position: fixed;
             top: 0;
@@ -68,7 +68,7 @@
         }
 
         .header-logo h4 {
-            color: var(--dark-pink);
+            color: var(--dark-teal);
             margin: 0;
             font-weight: 600;
         }
@@ -80,7 +80,7 @@
         }
 
         .btn-logout {
-            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--dark-pink) 100%);
+            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--dark-teal) 100%);
             border: none;
             color: white;
             padding: 0.5rem 1.25rem;
@@ -91,13 +91,13 @@
 
         .btn-logout:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(236, 64, 122, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 150, 136, 0.4);
             color: white;
         }
 
         /* Sidebar Toggle Button */
         .sidebar-toggle {
-            background: var(--primary-pink);
+            background: var(--primary-teal);
             border: none;
             color: white;
             width: 40px;
@@ -112,13 +112,13 @@
         /* Sidebar Styles */
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, #fce4ec 0%, #f8bbd9 100%);
+            background: linear-gradient(180deg, #e0f2f1 0%, #b2dfdb 100%);
             height: 100vh;
             position: fixed;
             left: 0;
             top: 70px;
             overflow-y: auto;
-            border-right: 2px solid #ffcdd2;
+            border-right: 2px solid #80cbc4;
             z-index: 1030;
             transition: transform 0.3s ease;
         }
@@ -133,7 +133,7 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--dark-pink);
+            color: var(--dark-teal);
             font-weight: 600;
         }
 
@@ -145,22 +145,22 @@
             display: flex;
             align-items: center;
             padding: 0.875rem 1.5rem;
-            color: #880e4f;
+            color: #004d40;
             text-decoration: none;
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
         }
 
         .menu-link:hover {
-            background-color: var(--hover-pink);
-            color: var(--dark-pink);
-            border-left-color: var(--primary-pink);
+            background-color: var(--hover-teal);
+            color: var(--dark-teal);
+            border-left-color: var(--primary-teal);
         }
 
         .menu-link.active {
-            background: linear-gradient(90deg, var(--hover-pink) 0%, transparent 100%);
-            border-left-color: var(--primary-pink);
-            color: var(--dark-pink);
+            background: linear-gradient(90deg, var(--hover-teal) 0%, transparent 100%);
+            border-left-color: var(--primary-teal);
+            color: var(--dark-teal);
             font-weight: 600;
         }
 
@@ -209,12 +209,12 @@
             border-radius: 15px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            border-left: 5px solid var(--primary-pink);
-            box-shadow: 0 2px 10px rgba(236, 64, 122, 0.1);
+            border-left: 5px solid var(--primary-teal);
+            box-shadow: 0 2px 10px rgba(0, 150, 136, 0.1);
         }
 
         .page-header h2 {
-            color: var(--dark-pink);
+            color: var(--dark-teal);
             margin: 0;
             font-weight: 600;
         }
@@ -224,8 +224,8 @@
             background: white;
             border-radius: 15px;
             padding: 1.5rem;
-            box-shadow: 0 2px 15px rgba(236, 64, 122, 0.1);
-            border: 1px solid #ffcdd2;
+            box-shadow: 0 2px 15px rgba(0, 150, 136, 0.1);
+            border: 1px solid #80cbc4;
             transition: transform 0.3s ease;
         }
 
@@ -235,7 +235,7 @@
 
         /* Buttons */
         .btn-pink {
-            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--dark-pink) 100%);
+            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--dark-teal) 100%);
             border: none;
             color: white;
             padding: 0.625rem 1.5rem;
@@ -246,7 +246,7 @@
 
         .btn-pink:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(236, 64, 122, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 150, 136, 0.4);
             color: white;
         }
 
@@ -258,7 +258,7 @@
         }
 
         .table-pink thead {
-            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--dark-pink) 100%);
+            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--dark-teal) 100%);
             color: white;
         }
 
@@ -270,17 +270,17 @@
 
         .table-pink td {
             padding: 1rem;
-            border-bottom: 1px solid #fce4ec;
+            border-bottom: 1px solid #e0f2f1;
         }
 
         .table-pink tbody tr:hover {
-            background-color: var(--soft-pink);
+            background-color: var(--soft-teal);
         }
 
         /* Form Controls */
         .form-control:focus {
-            border-color: var(--primary-pink);
-            box-shadow: 0 0 0 0.2rem rgba(236, 64, 122, 0.25);
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 0.2rem rgba(0, 150, 136, 0.25);
         }
 
         /* Scrollbar */
@@ -289,11 +289,11 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--light-pink);
+            background: var(--light-teal);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--primary-pink);
+            background: var(--primary-teal);
             border-radius: 4px;
         }
 
@@ -489,7 +489,7 @@
         {% block content %}
         <div class="page-header">
             <div class="d-flex align-items-center">
-                <i class="fas fa-tachometer-alt fa-2x me-3" style="color: var(--primary-pink);"></i>
+                <i class="fas fa-tachometer-alt fa-2x me-3" style="color: var(--primary-teal);"></i>
                 <div>
                     <h2>{{ page_title|default:"Dashboard" }}</h2>
                     <p class="mb-0 text-muted">Welcome to Medical Didi Admin Panel</p>

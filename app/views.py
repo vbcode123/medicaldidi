@@ -69,18 +69,25 @@ def add_sub_admin(request):
         profile_photo = request.FILES.get('profile_photo')
         joining_date = request.POST.get('joining_date')
         password = request.POST.get('password')
-
-        SubAdmin.objects.create(
-            name=name,
-            phone=phone,
-            address=address,
-            aadhaar_image=aadhaar_image,
-            profile_photo=profile_photo,
-            joining_date=joining_date,
-            password=password
-        )
-
-        return redirect('admin_dashboard')
+        
+        if SubAdmin.objects.filter(phone=phone).exists():
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'admin/add_sub_admin.html')
+        
+        try:
+            SubAdmin.objects.create(
+                name=name,
+                phone=phone,
+                address=address,
+                aadhaar_image=aadhaar_image,
+                profile_photo=profile_photo,
+                joining_date=joining_date,
+                password=password
+            )
+            return redirect('admin_dashboard')
+        except Exception as e:
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'admin/add_sub_admin.html')
 
     return render(request, 'admin/add_sub_admin.html')
 
@@ -182,29 +189,37 @@ def subadmin_add_nurse(request):
             messages.error(request, "Passwords do not match!")
             return render(request, 'subadmin/add_nurse.html')
         
-        Nurse.objects.create(
-            full_name=request.POST.get('full_name'),
-            gender=request.POST.get('gender'),
-            dob=request.POST.get('dob'),
-            profile_image=request.FILES.get('profile_image'),
-            aadhaar_image=request.FILES.get('aadhaar_image'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phone'),
-            address=request.POST.get('address'),
-            pin_code=request.POST.get('pin_code'),
-            certificate_image=request.FILES.get('certificate_image'),
-            experience=request.POST.get('experience'),
-            joining_date=request.POST.get('joining_date'),
-            password=password,
+        phone = request.POST.get('phone')
+        if Nurse.objects.filter(phone=phone).exists():
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'subadmin/add_nurse.html')
+        
+        try:
+            Nurse.objects.create(
+                full_name=request.POST.get('full_name'),
+                gender=request.POST.get('gender'),
+                dob=request.POST.get('dob'),
+                profile_image=request.FILES.get('profile_image'),
+                aadhaar_image=request.FILES.get('aadhaar_image'),
+                email=request.POST.get('email'),
+                phone=phone,
+                address=request.POST.get('address'),
+                pin_code=request.POST.get('pin_code'),
+                certificate_image=request.FILES.get('certificate_image'),
+                experience=request.POST.get('experience'),
+                joining_date=request.POST.get('joining_date'),
+                password=password,
 
-            # NEW FIELDS
-            parents_name=request.POST.get('parents_name'),
-            parents_aadhaar_image=request.FILES.get('parents_aadhaar_image'),
-            parents_contact_number=request.POST.get('parents_contact_number'),
-        )
-
-        messages.success(request, "Nurse Added Successfully!")
-        return redirect('subadmin_nurse_list')
+                # NEW FIELDS
+                parents_name=request.POST.get('parents_name'),
+                parents_aadhaar_image=request.FILES.get('parents_aadhaar_image'),
+                parents_contact_number=request.POST.get('parents_contact_number'),
+            )
+            messages.success(request, "Nurse Added Successfully!")
+            return redirect('subadmin_nurse_list')
+        except Exception as e:
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'subadmin/add_nurse.html')
 
     return render(request, 'subadmin/add_nurse.html')
 
@@ -218,28 +233,36 @@ def public_add_nurse(request):
             messages.error(request, "Passwords do not match!")
             return render(request, 'public_add_nurse.html')
         
-        Nurse.objects.create(
-            full_name=request.POST.get('full_name'),
-            gender=request.POST.get('gender'),
-            dob=request.POST.get('dob'),
-            profile_image=request.FILES.get('profile_image'),
-            aadhaar_image=request.FILES.get('aadhaar_image'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phone'),
-            address=request.POST.get('address'),
-            pin_code=request.POST.get('pin_code'),
-            certificate_image=request.FILES.get('certificate_image'),
-            experience=request.POST.get('experience'),
-            joining_date=request.POST.get('joining_date'),
-            password=password,
-            is_approved=False,  # Not approved yet
-            parents_name=request.POST.get('parents_name'),
-            parents_aadhaar_image=request.FILES.get('parents_aadhaar_image'),
-            parents_contact_number=request.POST.get('parents_contact_number'),
-        )
-
-        messages.success(request, "Thank you for applying! Your application is being reviewed.")
-        return redirect('home')
+        phone = request.POST.get('phone')
+        if Nurse.objects.filter(phone=phone).exists():
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'public_add_nurse.html')
+        
+        try:
+            Nurse.objects.create(
+                full_name=request.POST.get('full_name'),
+                gender=request.POST.get('gender'),
+                dob=request.POST.get('dob'),
+                profile_image=request.FILES.get('profile_image'),
+                aadhaar_image=request.FILES.get('aadhaar_image'),
+                email=request.POST.get('email'),
+                phone=phone,
+                address=request.POST.get('address'),
+                pin_code=request.POST.get('pin_code'),
+                certificate_image=request.FILES.get('certificate_image'),
+                experience=request.POST.get('experience'),
+                joining_date=request.POST.get('joining_date'),
+                password=password,
+                is_approved=False,  # Not approved yet
+                parents_name=request.POST.get('parents_name'),
+                parents_aadhaar_image=request.FILES.get('parents_aadhaar_image'),
+                parents_contact_number=request.POST.get('parents_contact_number'),
+            )
+            messages.success(request, "Thank you for applying! Your application is being reviewed.")
+            return redirect('home')
+        except Exception as e:
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'public_add_nurse.html')
 
     return render(request, 'public_add_nurse.html')
 
@@ -512,22 +535,31 @@ def subadmin_add_patient(request):
             messages.error(request, "Passwords do not match!")
             return render(request, 'subadmin/add_patient.html')
         
-        Patient.objects.create(
-            full_name=request.POST.get('full_name'),
-            phone=request.POST.get('phone'),
-            email=request.POST.get('email'),
-            profile_image=request.FILES.get('profile_image'),
-            address=request.POST.get('address'),
-            pin_code=request.POST.get('pin_code'),
-            aadhaar_image=request.FILES.get('aadhaar_image'),
-            agreement_image=request.FILES.get('agreement_image'),
-            patient_representative_name=request.POST.get('patient_representative_name'),
-            patient_representative_phone=request.POST.get('patient_representative_phone'),
-            password=password,
-            is_approved=True
-        )
-        messages.success(request, "Patient added successfully!")
-        return redirect('subadmin_patient_list')
+        phone = request.POST.get('phone')
+        if Patient.objects.filter(phone=phone).exists():
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'subadmin/add_patient.html')
+        
+        try:
+            Patient.objects.create(
+                full_name=request.POST.get('full_name'),
+                phone=phone,
+                email=request.POST.get('email'),
+                profile_image=request.FILES.get('profile_image'),
+                address=request.POST.get('address'),
+                pin_code=request.POST.get('pin_code'),
+                aadhaar_image=request.FILES.get('aadhaar_image'),
+                agreement_image=request.FILES.get('agreement_image'),
+                patient_representative_name=request.POST.get('patient_representative_name'),
+                patient_representative_phone=request.POST.get('patient_representative_phone'),
+                password=password,
+                is_approved=True
+            )
+            messages.success(request, "Patient added successfully!")
+            return redirect('subadmin_patient_list')
+        except Exception as e:
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'subadmin/add_patient.html')
     
     return render(request, 'subadmin/add_patient.html')
 
@@ -668,22 +700,31 @@ def public_add_patient(request):
             messages.error(request, "Passwords do not match!")
             return render(request, 'public_add_patient.html')
         
-        Patient.objects.create(
-            full_name=request.POST.get('full_name'),
-            phone=request.POST.get('phone'),
-            email=request.POST.get('email'),
-            profile_image=request.FILES.get('profile_image'),
-            address=request.POST.get('address'),
-            pin_code=request.POST.get('pin_code'),
-            aadhaar_image=request.FILES.get('aadhaar_image'),
-            agreement_image=request.FILES.get('agreement_image'),
-            patient_representative_name=request.POST.get('patient_representative_name'),
-            patient_representative_phone=request.POST.get('patient_representative_phone'),
-            password=password,
-            is_approved=False
-        )
-        messages.success(request, "Thank you for registering! Your account is pending approval.")
-        return redirect('home')
+        phone = request.POST.get('phone')
+        if Patient.objects.filter(phone=phone).exists():
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'public_add_patient.html')
+        
+        try:
+            Patient.objects.create(
+                full_name=request.POST.get('full_name'),
+                phone=phone,
+                email=request.POST.get('email'),
+                profile_image=request.FILES.get('profile_image'),
+                address=request.POST.get('address'),
+                pin_code=request.POST.get('pin_code'),
+                aadhaar_image=request.FILES.get('aadhaar_image'),
+                agreement_image=request.FILES.get('agreement_image'),
+                patient_representative_name=request.POST.get('patient_representative_name'),
+                patient_representative_phone=request.POST.get('patient_representative_phone'),
+                password=password,
+                is_approved=False
+            )
+            messages.success(request, "Thank you for registering! Your account is pending approval.")
+            return redirect('home')
+        except Exception as e:
+            messages.error(request, "This mobile number is already registered. Please use a different mobile number.")
+            return render(request, 'public_add_patient.html')
     
     return render(request, 'public_add_patient.html')
 

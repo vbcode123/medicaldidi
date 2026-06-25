@@ -76,7 +76,7 @@
                         <script>
                             Swal.fire({
                                 icon: '{{ message.tags }}',
-                                title: '{% if message.tags == "success" %}Success!{% else %}Error!{% endif %}',
+                                title: '{% if message.tags == "success" %}Success!{% else %}Alert!{% endif %}',
                                 text: '{{ message }}',
                                 confirmButtonText: 'Okay'
                             }).then((result) => {
